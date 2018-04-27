@@ -1,0 +1,18 @@
+{ 
+	"username":"john@example.com", 
+	"password":"password",
+	"ticketprourl":"https://ticketpro.janove.io/#/",
+	"ticketfileurl":"https://ticketfiles.janove.io/#/",
+	"ExpirationInDays":"7",
+	"expirationActionThreshold":"8",
+	"reportfilename":"report.xlsx",
+	"changelogfilename":"changelog.xlsx",
+	"path":"./data/",
+	"body":"Please see attached file",
+	"subject":"Ticketpro status",
+	"receiver":"qakker@gmail.com",
+	"port":"465",
+	"server":"smtp.gmail.com",
+	"sender":"trygvesbil@gmail.com",
+	"regex":"[a*-z]+(@)+[a*-z]+"
+}

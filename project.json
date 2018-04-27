@@ -1,0 +1,14 @@
+{
+  "name": "ticketpro_git",
+  "description": "Ticketpro løsning uten bruk av word / exchange",
+  "main": "Main.xaml",
+  "dependencies": {},
+  "excludedData": [
+    "Private:*",
+    "*password*"
+  ],
+  "toolVersion": "18.1.2.0",
+  "projectVersion": "1.0.6690.24219",
+  "packOptions": {},
+  "runtimeOptions": {}
+}

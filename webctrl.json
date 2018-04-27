@@ -1,0 +1,5 @@
+	[
+		"<webctrl aaname='Home' tag='A' />",
+		"<webctrl aaname='Archive' tag='A' />",
+		"<webctrl aaname='Queue' tag='A' />"
+	]
