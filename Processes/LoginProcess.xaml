@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="RunRobot" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="RunRobot_1"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Login" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="Login_1"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -53,53 +53,43 @@
       <AssemblyReference>System.Xaml</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="RunRobot" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Login" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:Boolean" Name="isChromeRunning" />
+      <Variable x:TypeArguments="x:Boolean" Name="loggedin" />
     </Sequence.Variables>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Connect workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Library\Chrome\Connect.xaml">
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke checkIfLoggedIn workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Library\Chrome\Login\checkIfLoggedIn.xaml">
       <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+        <OutArgument x:TypeArguments="x:Boolean" x:Key="loggedIn">[loggedin]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Login workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Processes\LoginProcess.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ScrapeUsers workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Processes\Scrape Users\ScrapeUsers.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ScrapeTickets workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Processes\Scrape Tickets\ScrapeTickets.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke WriteReport workflow" UnSafe="False" WorkflowFileName="Processes\Create Reports\Report\WriteReport.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-      <sap2010:WorkflowViewState.IdRef>InvokeWorkflowFile_6</sap2010:WorkflowViewState.IdRef>
-    </ui:InvokeWorkflowFile>
-    <sads:DebugSymbol.Symbol>dzxDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFJ1blJvYm90LnhhbWwLOANXDgIBATwFQB0CAQpBBUUdAgEIRgVKHQIBBksFTx0CAQRQBVUdAgECPLQBPNEBAgELQbIBQc8BAgEJRrgBRuEBAgEHS7oBS+cBAgEFUIEBULMBAgED</sads:DebugSymbol.Symbol>
+    <If Condition="[loggedin]" sap2010:WorkflowViewState.IdRef="If_1">
+      <If.Then>
+        <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="Already logged in" />
+      </If.Then>
+      <If.Else>
+        <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Login workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Chrome\Login.xaml">
+          <ui:InvokeWorkflowFile.Arguments>
+            <scg:Dictionary x:TypeArguments="x:String, Argument" />
+          </ui:InvokeWorkflowFile.Arguments>
+        </ui:InvokeWorkflowFile>
+      </If.Else>
+    </If>
+    <sads:DebugSymbol.Symbol>d0NDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xMb2dpbi54YW1sCjgDTg4CAQE8BUAdAgEJQQVMCgIBAj5DPk0CAQs8vAE85wECAQpBE0EfAgEDQwlDjAECAQdGCUohAgEFQ3ZDiQECAQhGtgFG0QECAQY=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_3" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="653,87" />
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91" />
       <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_4" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_5" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_6" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="336,719">
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="653,239" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="675,490">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="RunRobot_1" sap:VirtualizedContainerService.HintSize="376,919" />
+      <sap2010:ViewStateData Id="Login_1" sap:VirtualizedContainerService.HintSize="715,690" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

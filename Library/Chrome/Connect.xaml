@@ -1,8 +1,7 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Connect" this:Connect.UrlArg="https://ticketpro.janove.io/#/login"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Connect"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
- xmlns:s="clr-namespace:System;assembly=mscorlib"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
@@ -14,6 +13,11 @@
   <x:Members>
     <x:Property Name="UrlArg" Type="InArgument(x:String)" />
   </x:Members>
+  <this:Connect.UrlArg>
+    <InArgument x:TypeArguments="x:String">
+      <Literal x:TypeArguments="x:String" Value="" />
+    </InArgument>
+  </this:Connect.UrlArg>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
@@ -69,26 +73,46 @@
     <Sequence.Variables>
       <Variable x:TypeArguments="x:Boolean" Name="isChromeRunning" />
       <Variable x:TypeArguments="ui:GenericValue" Name="url" />
+      <Variable x:TypeArguments="ui:Browser" Name="browser" />
     </Sequence.Variables>
+    <Sequence DisplayName="Assign Variables" sap2010:WorkflowViewState.IdRef="Sequence_10">
+      <If Condition="[urlArg.Equals(&quot;&quot;)]" DisplayName="if UrlArg = &quot;&quot; get from json" sap2010:WorkflowViewState.IdRef="If_3">
+        <If.Then>
+          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_12">
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="get url from settings.json (ticketprourl)" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="key">ticketprourl</InArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="value">[UrlArg]</OutArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+            <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_10" Level="Info" Message="[&quot;got url from settings.json: &quot; + UrlArg]" />
+          </Sequence>
+        </If.Then>
+        <If.Else>
+          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_13">
+            <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_9" Level="Info" Message="[&quot;urlArg was provided: &quot; + UrlArg]" />
+          </Sequence>
+        </If.Else>
+      </If>
+      <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
+        <Assign.To>
+          <OutArgument x:TypeArguments="ui:GenericValue">[url]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="ui:GenericValue">[UrlArg]</InArgument>
+        </Assign.Value>
+      </Assign>
+    </Sequence>
     <ui:UiElementExists DisplayName="Check if Chrome is running" Exists="[isChromeRunning]" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
       <ui:UiElementExists.Target>
         <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="9a45533483d4136b07dc89125fe702c2" Selector="&lt;html app='chrome.exe' /&gt;&lt;ctrl role='client' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
       </ui:UiElementExists.Target>
     </ui:UiElementExists>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
-      <Assign.To>
-        <OutArgument x:TypeArguments="ui:GenericValue">[url]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="ui:GenericValue">[UrlArg]</InArgument>
-      </Assign.Value>
-    </Assign>
     <If Condition="[isChromeRunning]" DisplayName="If Chome is running" sap2010:WorkflowViewState.IdRef="If_1">
       <If.Then>
         <Sequence DisplayName="Chrome is running" sap2010:WorkflowViewState.IdRef="Sequence_3">
           <Sequence.Variables>
             <Variable x:TypeArguments="ui:GenericValue" Name="URLfromScreen" />
-            <Variable x:TypeArguments="ui:Browser" Name="browser" />
           </Sequence.Variables>
           <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome'" sap2010:WorkflowViewState.IdRef="BrowserScope_2" InformativeScreenshot="8522fb0862761a1ac6a323fc4628bd33" Selector="&lt;html app='chrome.exe' /&gt;" UiBrowser="[browser]">
             <ui:BrowserScope.Body>
@@ -96,50 +120,23 @@
                 <ActivityAction.Argument>
                   <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
                 </ActivityAction.Argument>
-                <Sequence DisplayName="Do" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                <Sequence DisplayName="Connect to site" sap2010:WorkflowViewState.IdRef="Sequence_8">
                   <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="Chrome is running" />
-                  <TryCatch DisplayName="Try catch getURL" sap2010:WorkflowViewState.IdRef="TryCatch_1">
-                    <TryCatch.Try>
-                      <ui:GetAttribute ContinueOnError="{x:Null}" Attribute="url" DisplayName="Get attribute &quot;url&quot;" sap2010:WorkflowViewState.IdRef="GetAttribute_2">
-                        <ui:GetAttribute.Result>
-                          <OutArgument x:TypeArguments="ui:GenericValue">[URLfromScreen]</OutArgument>
-                        </ui:GetAttribute.Result>
-                        <ui:GetAttribute.Target>
-                          <ui:Target ClippingRegion="{x:Null}" Selector="{x:Null}" TimeoutMS="{x:Null}" Element="[browser]" InformativeScreenshot="2413585b2f52fbb754908c711c4e076f" WaitForReady="INTERACTIVE" />
-                        </ui:GetAttribute.Target>
-                      </ui:GetAttribute>
-                    </TryCatch.Try>
-                    <TryCatch.Catches>
-                      <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_1">
-                        <ActivityAction x:TypeArguments="s:Exception">
-                          <ActivityAction.Argument>
-                            <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
-                          </ActivityAction.Argument>
-                          <Sequence DisplayName="Exception Sequence" sap2010:WorkflowViewState.IdRef="Sequence_9">
-                            <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Error" Message="[&quot;probably no URL: &quot; + exception.ToString]" />
-                            <ui:NavigateTo Browser="{x:Null}" DisplayName="Navigate to" sap2010:WorkflowViewState.IdRef="NavigateTo_2" Url="[url]" />
-                            <Delay Duration="00:00:02" sap2010:WorkflowViewState.IdRef="Delay_1" />
-                            <ui:GetAttribute ContinueOnError="{x:Null}" Attribute="url" DisplayName="Get attribute &quot;url&quot;" sap2010:WorkflowViewState.IdRef="GetAttribute_3">
-                              <ui:GetAttribute.Result>
-                                <OutArgument x:TypeArguments="ui:GenericValue">[URLfromScreen]</OutArgument>
-                              </ui:GetAttribute.Result>
-                              <ui:GetAttribute.Target>
-                                <ui:Target ClippingRegion="{x:Null}" Selector="{x:Null}" TimeoutMS="{x:Null}" Element="[browser]" InformativeScreenshot="2413585b2f52fbb754908c711c4e076f" WaitForReady="INTERACTIVE" />
-                              </ui:GetAttribute.Target>
-                            </ui:GetAttribute>
-                          </Sequence>
-                        </ActivityAction>
-                      </Catch>
-                    </TryCatch.Catches>
-                  </TryCatch>
-                  <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[URLfromScreen]" />
-                  <If Condition="[URLfromScreen.Equals(url)]" DisplayName="If URL wrong" sap2010:WorkflowViewState.IdRef="If_2">
+                  <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke getCurrentURL workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Chrome\getCurrentURL.xaml">
+                    <ui:InvokeWorkflowFile.Arguments>
+                      <OutArgument x:TypeArguments="ui:GenericValue" x:Key="UrlArg">[URLfromScreen]</OutArgument>
+                      <InArgument x:TypeArguments="ui:Browser" x:Key="browserArg">[browser]</InArgument>
+                    </ui:InvokeWorkflowFile.Arguments>
+                  </ui:InvokeWorkflowFile>
+                  <If Condition="[URLfromScreen.ToString.Contains(url)]" DisplayName="If URL is wrong" sap2010:WorkflowViewState.IdRef="If_2">
                     <If.Then>
                       <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_8" Level="Info" Message="Already at correct URL" />
                     </If.Then>
                     <If.Else>
                       <Sequence DisplayName="URLfromScreen != URL" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                        <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[URLfromScreen]" />
                         <ui:NavigateTo Browser="{x:Null}" DisplayName="Navigate to" sap2010:WorkflowViewState.IdRef="NavigateTo_3" Url="[url]" />
+                        <Delay DisplayName="Delay 3 sec" Duration="00:00:03" sap2010:WorkflowViewState.IdRef="Delay_3" />
                       </Sequence>
                     </If.Else>
                   </If>
@@ -159,7 +156,8 @@
                   <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
                 </ActivityAction.Argument>
                 <Sequence DisplayName="Do" sap2010:WorkflowViewState.IdRef="Sequence_4">
-                  <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="Chrome is running" />
+                  <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;Chrome loading site &quot; + url]" />
+                  <Delay DisplayName="Delay 5 sec" Duration="00:00:05" sap2010:WorkflowViewState.IdRef="Delay_2" />
                 </Sequence>
               </ActivityAction>
             </ui:OpenBrowser.Body>
@@ -167,55 +165,25 @@
         </Sequence>
       </If.Else>
     </If>
-    <sads:DebugSymbol.Symbol>d0pDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXENvbm5lY3QueGFtbDMBUQF1AQJEA6sBDgIBAUkFTRoCAThOBVUOAgEzVgWpAQoCAQJLgwFLwAECATxLywFL0QECATtJSUlcAgE5UzdTPwIBNlA4UD0CATRWE1YmAgEDWAmWARQCAQ2ZAQmnARQCAQVdC5UBHQIBDpoBC5oBkwECAQubAQumARwCAQZdiQJdqgICATJdtQJdwAICATBjEZIBHAIBD5oBeJoBkAECAQybAcUBmwHMAQIBCqEBEaMBHAIBB2QTZJYBAgEuZROGAR4CARmHAROHAZQBAgEXiAETkQEYAgEQogETogGWAQIBCGSAAWSTAQIBL2cXbikCASh2G4IBJgIBGocBgAGHAZEBAgEYiAEhiAE+AgERigEXigGfAQIBFY0BF48BIgIBEqIBgAGiAZMBAgEJZ01nUgIBK2lKaVkCASlscWx8AgEsdx13xAECASV4HXiWAQIBI3kdeWQCASF6HYEBLwIBG4oBhAGKAZwBAgEWjgEZjgGSAQIBE3eLAXfBAQIBJniMAXiTAQIBJHkteTcCASJ6U3pYAgEefFB8XwIBHH93f4IBAgEfjgGIAY4BjwECARQ=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0pDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXENvbm5lY3QueGFtbDgSBxI2AQJIA6kBDgIBAU4FaRACAS1qBW4aAgEobwWnAQoCAQJPB2AMAgEzYQdoEAIBLmyDAWzAAQIBLGzLAWzRAQIBK2pJalwCASlvE28mAgEDcQmTARQCAQ+WAQmlARQCAQVPFU80AgE0UQtZFgIBOlwLXhYCATZmOWZBAgExYzpjPwIBL3ULkgEdAgEQlwELlwGTAQIBDZgBC6QBHAIBBlINVyUCAT5YDVizAQIBO10NXasBAgE3dYkCdaoCAgEndbUCdcACAgElexGPARwCARGXAXiXAZABAgEOmAHFAZgBzAECAQyeARGhARwCAQdVR1VPAgFBVERUUAIBQFLOAVL7AQIBP1h7WLABAgE8XXpdqAECATh8E3yWAQIBI30TggErAgEdgwETjgEYAgESnwETnwGtAQIBCqABE6ABdAIBCHyAAXyTAQIBJIABU4ABXAIBIX9Vf2QCAR99yAF96wECAR6DASGDAUkCAROFAReFAZ8BAgEbiAEXjAEiAgEUnwGAAZ8BqgECAQugAT2gAUcCAQmFAYQBhQGcAQIBHIkBGYkBmgECARmKARmKAZIBAgEXiwEZiwF6AgEViQGGAYkBlwECARqKAYgBigGPAQIBGIsBQ4sBTQIBFg==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="UiElementExists_1" sap:VirtualizedContainerService.HintSize="1194,106">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="314,87">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="1194,60" />
-      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="675,91">
+      <sap2010:ViewStateData Id="LogMessage_10" sap:VirtualizedContainerService.HintSize="314,91">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetAttribute_2" sap:VirtualizedContainerService.HintSize="314,134">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="LogMessage_7" sap:VirtualizedContainerService.HintSize="314,91">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="NavigateTo_2" sap:VirtualizedContainerService.HintSize="314,59">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="314,22" />
-      <sap2010:ViewStateData Id="GetAttribute_3" sap:VirtualizedContainerService.HintSize="314,134">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="336,550">
+      <sap2010:ViewStateData Id="Sequence_12" sap:VirtualizedContainerService.HintSize="336,342">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -223,7 +191,14 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Catch`1_1" sap:VirtualizedContainerService.HintSize="400,619">
+      <sap2010:ViewStateData Id="LogMessage_9" sap:VirtualizedContainerService.HintSize="314,91">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_13" sap:VirtualizedContainerService.HintSize="336,215">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -231,7 +206,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="TryCatch_1" sap:VirtualizedContainerService.HintSize="675,51">
+      <sap2010:ViewStateData Id="If_3" sap:VirtualizedContainerService.HintSize="242,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
@@ -239,7 +214,31 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="LogMessage_6" sap:VirtualizedContainerService.HintSize="675,91">
+      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="897,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="UiElementExists_1" sap:VirtualizedContainerService.HintSize="897,106">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="314,87">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
@@ -253,6 +252,13 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="LogMessage_6" sap:VirtualizedContainerService.HintSize="314,91">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="NavigateTo_3" sap:VirtualizedContainerService.HintSize="314,59">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -260,7 +266,8 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,183">
+      <sap2010:ViewStateData Id="Delay_3" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,376">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -268,14 +275,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="675,330">
+      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="314,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="697,807">
+      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="336,433">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -283,14 +291,14 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_2" sap:VirtualizedContainerService.HintSize="711,993">
+      <sap2010:ViewStateData Id="BrowserScope_2" sap:VirtualizedContainerService.HintSize="414,619">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="733,1117">
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="436,743">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -312,7 +320,8 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,215">
+      <sap2010:ViewStateData Id="Delay_2" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,277">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -320,14 +329,14 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="OpenBrowser_1" sap:VirtualizedContainerService.HintSize="414,354">
+      <sap2010:ViewStateData Id="OpenBrowser_1" sap:VirtualizedContainerService.HintSize="414,416">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="436,609">
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="436,671">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -335,21 +344,21 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="1194,1265">
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="897,891">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="1216,1635">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="919,1252">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Connect_1" sap:VirtualizedContainerService.HintSize="1256,1715">
+      <sap2010:ViewStateData Id="Connect_1" sap:VirtualizedContainerService.HintSize="959,1332">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="ShouldCollapseAll">True</x:Boolean>

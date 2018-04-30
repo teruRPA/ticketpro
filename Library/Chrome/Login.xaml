@@ -61,12 +61,22 @@
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="username" />
       <Variable x:TypeArguments="x:String" Name="password" />
+      <Variable x:TypeArguments="ui:Browser" Name="browser" />
+      <Variable x:TypeArguments="x:String" Name="state" />
     </Sequence.Variables>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Connect workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Chrome\Connect.xaml">
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CheckConnection workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Library\Chrome\CheckConnection.xaml">
       <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+        <OutArgument x:TypeArguments="x:String" x:Key="State">[state]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
+    <If Condition="[state.Equals(&quot;loggedOut&quot;)]" sap2010:WorkflowViewState.IdRef="If_1">
+      <If.Else>
+        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6">
+          <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;state is now &quot; + state]" />
+          <Throw Exception="[new Exception(&quot;Unexpected state&quot;)]" sap2010:WorkflowViewState.IdRef="Throw_1" />
+        </Sequence>
+      </If.Else>
+    </If>
     <Sequence DisplayName="Get credentials" sap2010:WorkflowViewState.IdRef="Sequence_5">
       <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Username" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
         <ui:InvokeWorkflowFile.Arguments>
@@ -83,7 +93,7 @@
     </Sequence>
     <TryCatch DisplayName="Try catch" sap2010:WorkflowViewState.IdRef="TryCatch_1">
       <TryCatch.Try>
-        <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketPRO'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="78cdf9dcfa361f6a9ced0e88642ed131" Selector="&lt;html app='chrome.exe' title='TicketPRO 2000' /&gt;" TimeoutMS="1500">
+        <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketPRO'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="c1e372dac21f2ece5da6a73bd8748db0" Selector="&lt;html app='chrome.exe' title='TicketPRO 2000' /&gt;" TimeoutMS="1500">
           <ui:BrowserScope.Body>
             <ActivityAction x:TypeArguments="x:Object">
               <ActivityAction.Argument>
@@ -93,24 +103,21 @@
                 <Sequence.Variables>
                   <Variable x:TypeArguments="ui:GenericValue" Name="welcomeTest" />
                 </Sequence.Variables>
-                <ui:TypeInto DelayBetweenKeys="{x:Null}" Activate="False" ClickBeforeTyping="True" DelayBefore="600" DelayMS="200" DisplayName="Type into 'INPUT'" EmptyField="True" sap2010:WorkflowViewState.IdRef="TypeInto_2" SendWindowMessages="False" SimulateType="False" Text="[username+ &quot;[k(tab)]&quot; + password + &quot;[k(enter)]&quot;]">
+                <ui:TypeInto DelayBetweenKeys="{x:Null}" Activate="False" ClickBeforeTyping="True" DelayBefore="600" DelayMS="1500" DisplayName="Type into 'INPUT'" EmptyField="True" sap2010:WorkflowViewState.IdRef="TypeInto_2" SendWindowMessages="False" SimulateType="False" Text="[username+ &quot;[k(tab)]&quot; + password + &quot;[k(enter)]&quot;]">
                   <ui:TypeInto.Target>
                     <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="fe13f3300eff23ea2cf89f8ad456e46c" Selector="&lt;webctrl tag='INPUT' type='email' /&gt;" TimeoutMS="1500" WaitForReady="INTERACTIVE" />
                   </ui:TypeInto.Target>
                 </ui:TypeInto>
-                <ui:GetAttribute ContinueOnError="{x:Null}" Attribute="aaname" DisplayName="Get attribute &quot;url&quot;" sap2010:WorkflowViewState.IdRef="GetAttribute_1">
-                  <ui:GetAttribute.Result>
-                    <OutArgument x:TypeArguments="ui:GenericValue">[welcomeTest]</OutArgument>
-                  </ui:GetAttribute.Result>
-                  <ui:GetAttribute.Target>
-                    <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5b564d0c3acc2a733a2d9a5adcbf8bb1" Selector="&lt;webctrl tag='SPAN' /&gt;" WaitForReady="INTERACTIVE" />
-                  </ui:GetAttribute.Target>
-                </ui:GetAttribute>
-                <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[welcomeTest]" />
-                <If Condition="[welcomeTest.Equals(&quot;Welcome John&quot;)]" sap2010:WorkflowViewState.IdRef="If_1">
-                  <If.Else>
-                    <Throw Exception="[new Exception(&quot;No welcome msg found&quot;)]" sap2010:WorkflowViewState.IdRef="Throw_1" />
-                  </If.Else>
+                <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CheckConnection workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="Library\Chrome\CheckConnection.xaml">
+                  <ui:InvokeWorkflowFile.Arguments>
+                    <OutArgument x:TypeArguments="x:String" x:Key="State">[state]</OutArgument>
+                  </ui:InvokeWorkflowFile.Arguments>
+                </ui:InvokeWorkflowFile>
+                <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;state is now &quot; + state]" />
+                <If Condition="[state.Equals(&quot;loggedOut&quot;)]" sap2010:WorkflowViewState.IdRef="If_2">
+                  <If.Then>
+                    <Throw Exception="[new Exception(&quot;Unexpected state&quot;)]" sap2010:WorkflowViewState.IdRef="Throw_2" />
+                  </If.Then>
                 </If>
               </Sequence>
             </ActivityAction>
@@ -123,19 +130,29 @@
             <ActivityAction.Argument>
               <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
             </ActivityAction.Argument>
-            <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Error" Message="already logged in?" />
+            <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Error" Message="[&quot;Error in Login &quot; + exception.ToString]" />
           </ActivityAction>
         </Catch>
       </TryCatch.Catches>
     </TryCatch>
-    <sads:DebugSymbol.Symbol>d0hDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXExvZ2luLnhhbWwjPAOEAQ4CAQFBBUUdAgEnRgVTEAIBHFQFggEQAgECQbQBQdEBAgEoRwdMHwIBIk0HUh8CAR1WCXYbAgEFfg1+kgECAQNKQUpLAgElST5JRgIBJEerAUfYAQIBI1BBUEsCASBPPk9GAgEfTasBTdgBAgEeVpUCVs0CAgEbVtgCVt4CAgEaXA9zGgIBBn57fo8BAgEEYBFkHwIBEmURbCMCAQ1tEW2QAQIBC24RchYCAQdijwFiuwECARlgfmCDAQIBGGLGAWLMAQIBF2CYAmDeAgIBFGBwYHUCARNlR2VPAgEQZ0RnUQIBDmqkAWrCAQIBEW1+bY0BAgEMbh9uTwIBCHAVcIYBAgEJcCZwWQIBCg==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0hDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXExvZ2luLnhhbWwqPAOLAQ4CAQFDBUcdAgEySAVPCgIBKVAFXRACAR5eBYkBEAIBAkO8AUPhAQIBNUU/RUYCATNIE0g6AgEqSglNFAIBLFEHVh8CASRXB1wfAgEfYAl9GwIBBoUBDYUBsgECAQNLC0ugAQIBL0wLTHgCAS1UQVRLAgEnUz5TRgIBJlGrAVHYAQIBJVpBWksCASJZPllGAgEhV6sBV9gBAgEgYJUCYM0CAgEdYNgCYN4CAgEcZg96GgIBB4UBe4UBrwECAQRLeEudAQIBMEwcTEsCAS5qEW4fAgEUbxFzKQIBEHQRdKYBAgENdRF5FgIBCGyPAWy7AQIBG2p+aoQBAgEabMYBbMwBAgEZapkCat8CAgEWanBqdQIBFW/IAW/tAQIBE3FLcVICARF0fnSjAQIBDnUfdUYCAQl3FXeCAQIBC3cmd1UCAQw=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="414,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_5" sap:VirtualizedContainerService.HintSize="464,87" />
+      <sap2010:ViewStateData Id="LogMessage_5" sap:VirtualizedContainerService.HintSize="314,91" />
+      <sap2010:ViewStateData Id="Throw_1" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="336,277">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,425" />
       <sap2010:ViewStateData Id="InvokeWorkflowFile_3" sap:VirtualizedContainerService.HintSize="314,87" />
       <sap2010:ViewStateData Id="InvokeWorkflowFile_4" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="414,338">
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="464,338">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -144,24 +161,18 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="TypeInto_2" sap:VirtualizedContainerService.HintSize="464,134" />
-      <sap2010:ViewStateData Id="GetAttribute_1" sap:VirtualizedContainerService.HintSize="464,134">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="464,91" />
-      <sap2010:ViewStateData Id="Throw_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,207" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,810">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_6" sap:VirtualizedContainerService.HintSize="464,87" />
+      <sap2010:ViewStateData Id="LogMessage_3" sap:VirtualizedContainerService.HintSize="464,91" />
+      <sap2010:ViewStateData Id="Throw_2" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="464,207" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,763">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="500,956">
+      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="500,909">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -178,15 +189,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="TryCatch_1" sap:VirtualizedContainerService.HintSize="414,322" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="436,951">
+      <sap2010:ViewStateData Id="TryCatch_1" sap:VirtualizedContainerService.HintSize="464,322" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="486,1416">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Login_1" sap:VirtualizedContainerService.HintSize="476,1071" />
+      <sap2010:ViewStateData Id="Login_1" sap:VirtualizedContainerService.HintSize="526,1776" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
