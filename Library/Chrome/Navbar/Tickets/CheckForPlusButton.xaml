@@ -73,6 +73,7 @@
               <Variable x:TypeArguments="x:String" Name="state" />
               <Variable x:TypeArguments="ui:UiElement" Name="foundPlusButton" />
             </Sequence.Variables>
+            <Delay Duration="00:00:01" sap2010:WorkflowViewState.IdRef="Delay_2" />
             <ui:WaitUiElementAppear DisplayName="Find Element 'A  new-ticket-link'" FoundElement="[foundPlusButton]" sap2010:WorkflowViewState.IdRef="WaitUiElementAppear_1" WaitActive="True" WaitVisible="False">
               <ui:WaitUiElementAppear.Target>
                 <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="f5cdb0ab4f453e1d6a6bea08a1b48c72" Selector="&lt;webctrl id='new-ticket-link' tag='A' /&gt;" TimeoutMS="15000" WaitForReady="INTERACTIVE" />
@@ -101,10 +102,11 @@
         </ActivityAction>
       </ui:BrowserScope.Body>
     </ui:BrowserScope>
-    <sads:DebugSymbol.Symbol>d2RDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXENoZWNrRm9yUGx1c0J1dHRvbi54YW1sFzwDaQ4CAQFBBWcXAgECQaYCQd4CAgEaRwtkFgIBA0wNUCYCARVRDVFUAgETUg1WJQIBD1cNXhICAQlfDWMSAgEETGJMdQIBGE6LAU67AQIBF07GAU7NAQIBFlEdUScCARRSxAFS6wECARJUR1ROAgEQVxtXOAIBClkRWYoBAgENXBFciAECAQtfG18+AgEFYRFhiAECAQdZflmHAQIBDlwiXFsCAQxhImFbAgEI</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d2RDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXENoZWNrRm9yUGx1c0J1dHRvbi54YW1sGTwDag4CAQFBBWgXAgECQaYCQd4CAgEcRwtlFgIBA0wNTFQCARpNDVEmAgEVUg1SVAIBE1MNVyUCAQ9YDV8SAgEJYA1kEgIBBEwdTCcCARtNYk11AgEYT4sBT7sBAgEXT8YBT80BAgEWUh1SJwIBFFPEAVPrAQIBElVHVU4CARBYG1g4AgEKWhFaigECAQ1dEV2IAQIBC2AbYD4CAQViEWKIAQIBB1p+WocBAgEOXSJdWwIBDGIiYlsCAQg=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="Delay_2" sap:VirtualizedContainerService.HintSize="539,22" />
       <sap2010:ViewStateData Id="WaitUiElementAppear_1" sap:VirtualizedContainerService.HintSize="539,106" />
       <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="539,22" />
       <sap2010:ViewStateData Id="InvokeWorkflowFile_7" sap:VirtualizedContainerService.HintSize="539,87" />
@@ -113,22 +115,22 @@
       <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="539,238" />
       <sap2010:ViewStateData Id="Throw_1" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="539,207" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="561,944">
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="561,1006">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="575,1090" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="597,1214">
+      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="575,1152" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="597,1276">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ScrapeTickets_1" sap:VirtualizedContainerService.HintSize="637,1454" />
+      <sap2010:ViewStateData Id="ScrapeTickets_1" sap:VirtualizedContainerService.HintSize="637,1356" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

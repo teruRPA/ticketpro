@@ -2,7 +2,6 @@
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
- xmlns:s="clr-namespace:System;assembly=mscorlib"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
@@ -59,9 +58,19 @@
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="CheckForCompletedRow" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
-      <Variable x:TypeArguments="s:String[]" Name="departments" />
-      <Variable x:TypeArguments="x:String" Name="url" />
+      <Variable x:TypeArguments="x:String" Name="state" />
     </Sequence.Variables>
+    <Delay Duration="00:00:01" sap2010:WorkflowViewState.IdRef="Delay_2" />
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CheckConnection workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName=".\Library\Chrome\CheckConnection.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <OutArgument x:TypeArguments="x:String" x:Key="State">[state]</OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <If Condition="[state.Equals(&quot;archive&quot;)]" sap2010:WorkflowViewState.IdRef="If_3">
+      <If.Else>
+        <Throw Exception="[new Exception(&quot;Unexpected state: &quot; + state)]" sap2010:WorkflowViewState.IdRef="Throw_3" />
+      </If.Else>
+    </If>
     <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketPRO'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="904cad101c62d8d82b8956b09fa34a59" Selector="&lt;html app='chrome.exe' title='TicketPRO 2000' /&gt;">
       <ui:BrowserScope.Body>
         <ActivityAction x:TypeArguments="x:Object">
@@ -70,25 +79,14 @@
           </ActivityAction.Argument>
           <Sequence DisplayName="Inside Browser" sap2010:WorkflowViewState.IdRef="Sequence_4">
             <Sequence.Variables>
-              <Variable x:TypeArguments="x:String" Name="state" />
               <Variable x:TypeArguments="ui:UiElement" Name="completedColumn" />
             </Sequence.Variables>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CheckConnection workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName=".\Library\Chrome\CheckConnection.xaml">
-              <ui:InvokeWorkflowFile.Arguments>
-                <OutArgument x:TypeArguments="x:String" x:Key="State">[state]</OutArgument>
-              </ui:InvokeWorkflowFile.Arguments>
-            </ui:InvokeWorkflowFile>
-            <If Condition="[state.Equals(&quot;archive&quot;)]" sap2010:WorkflowViewState.IdRef="If_3">
-              <If.Else>
-                <Throw Exception="[new Exception(&quot;Unexpected state: &quot; + state)]" sap2010:WorkflowViewState.IdRef="Throw_3" />
-              </If.Else>
-            </If>
+            <Delay Duration="00:00:01" sap2010:WorkflowViewState.IdRef="Delay_1" />
             <ui:WaitUiElementAppear DisplayName="Find Element 'Completed'" FoundElement="[completedColumn]" sap2010:WorkflowViewState.IdRef="WaitUiElementAppear_1" WaitActive="True" WaitVisible="False">
               <ui:WaitUiElementAppear.Target>
                 <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="174a6843c07f800ab75607483129d3ec" Selector="&lt;webctrl tag='TABLE' /&gt;&lt;webctrl aaname='Completed' tag='TH' /&gt;" TimeoutMS="1500" WaitForReady="INTERACTIVE" />
               </ui:WaitUiElementAppear.Target>
             </ui:WaitUiElementAppear>
-            <Delay Duration="00:00:01" sap2010:WorkflowViewState.IdRef="Delay_1" />
             <If Condition="[completedColumn.IsVisible]" sap2010:WorkflowViewState.IdRef="If_2">
               <If.Else>
                 <Throw Exception="[new Exception(&quot;Unexpected state: &quot; + state)]" sap2010:WorkflowViewState.IdRef="Throw_2" />
@@ -98,33 +96,34 @@
         </ActivityAction>
       </ui:BrowserScope.Body>
     </ui:BrowserScope>
-    <sads:DebugSymbol.Symbol>d2ZDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXENoZWNrRm9yQ29tcGxldGVkUm93LnhhbWwVPANmDgIBAUEFZBcCAQJBpgJB3gICARhHC2EWAgEDTA1QJQIBFFENVRICAQ9WDVomAgEKWw1bVAIBCFwNYBICAQRMxAFM6wECARdOR05OAgEVURtRQAIBEFMRU4gBAgESVllWbAIBDViLAVjXAQIBDFjiAVjoAQIBC1sdWycCAQlcG1w4AgEFXhFeiAECAQZTIlNbAgETXiJeWwIBBw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d2ZDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXENoZWNrRm9yQ29tcGxldGVkUm93LnhhbWwXOwNkDgIBAT8FP0wCARlABUQdAgEVRQVJCgIBEEoFYhcCAQI/FT8fAgEaQLwBQOMBAgEYQj9CRgIBFkUTRTgCARFHCUeAAQIBE0qmAkreAgIBD1ALXxYCAQNHGkdTAgEUVA1UVAIBDVUNWSYCAQhaDV4SAgEEVB1UJwIBDlVZVWwCAQtXiwFX1wECAQpX4gFX6AECAQlaG1o4AgEFXBFciAECAQZcIlxbAgEH</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_7" sap:VirtualizedContainerService.HintSize="464,87" />
+      <sap2010:ViewStateData Id="Delay_2" sap:VirtualizedContainerService.HintSize="500,22" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_7" sap:VirtualizedContainerService.HintSize="500,87" />
       <sap2010:ViewStateData Id="Throw_3" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="If_3" sap:VirtualizedContainerService.HintSize="464,207" />
-      <sap2010:ViewStateData Id="WaitUiElementAppear_1" sap:VirtualizedContainerService.HintSize="464,106" />
+      <sap2010:ViewStateData Id="If_3" sap:VirtualizedContainerService.HintSize="500,208" />
       <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="464,22" />
+      <sap2010:ViewStateData Id="WaitUiElementAppear_1" sap:VirtualizedContainerService.HintSize="464,106" />
       <sap2010:ViewStateData Id="Throw_2" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="464,207" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="486,913">
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="486,539">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="500,1059" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="522,1183">
+      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="500,685" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="522,1246">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ScrapeTickets_1" sap:VirtualizedContainerService.HintSize="562,1263" />
+      <sap2010:ViewStateData Id="ScrapeTickets_1" sap:VirtualizedContainerService.HintSize="562,1366" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

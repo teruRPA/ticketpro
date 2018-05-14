@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="ClickUpload" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="Logout_1"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="2. Cleanup" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="2. Cleanup_1"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -7,6 +7,7 @@
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:si="clr-namespace:System.IO;assembly=mscorlib"
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
@@ -51,78 +52,66 @@
       <AssemblyReference>WindowsBase</AssemblyReference>
       <AssemblyReference>PresentationCore</AssemblyReference>
       <AssemblyReference>System.Xaml</AssemblyReference>
-      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
       <AssemblyReference>System.ServiceModel</AssemblyReference>
       <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="ClickUpload" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="Deletes all files in path from settings.json" DisplayName="2. Cleanup" sap2010:WorkflowViewState.IdRef="Sequence_2">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Name="ticketfileurl" />
-      <Variable x:TypeArguments="x:String" Name="state" />
+      <Variable x:TypeArguments="si:FileInfo[]" Name="files" />
+      <Variable x:TypeArguments="x:String" Name="path" />
     </Sequence.Variables>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CheckConnection workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="Library\Chrome\CheckConnection.xaml">
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Data folder Path" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Common\getEnvironmentVariable.xaml">
       <ui:InvokeWorkflowFile.Arguments>
-        <OutArgument x:TypeArguments="x:String" x:Key="State">[state]</OutArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="key">path</InArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="value">[path]</OutArgument>
       </ui:InvokeWorkflowFile.Arguments>
     </ui:InvokeWorkflowFile>
-    <If Condition="[state.Equals(&quot;ticketfiles&quot;)]" sap2010:WorkflowViewState.IdRef="If_2">
-      <If.Else>
-        <Throw Exception="[new Exception(&quot;Unexpected state &quot; + state)]" sap2010:WorkflowViewState.IdRef="Throw_2" />
-      </If.Else>
-    </If>
-    <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketFiles'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="05385e9e366d75a7c7dd890d82d9552d" Selector="&lt;html app='chrome.exe' title='TicketFiles 2000' /&gt;">
-      <ui:BrowserScope.Body>
-        <ActivityAction x:TypeArguments="x:Object">
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="si:FileInfo[]">[files]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="si:FileInfo[]">[New DirectoryInfo(path).GetFiles("*.*")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:ForEach x:TypeArguments="si:FileInfo" DisplayName="For each" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[files]">
+      <ui:ForEach.Body>
+        <ActivityAction x:TypeArguments="si:FileInfo">
           <ActivityAction.Argument>
-            <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
+            <DelegateInArgument x:TypeArguments="si:FileInfo" Name="file" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Inside Browser" sap2010:WorkflowViewState.IdRef="Sequence_2">
-            <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'SPAN'" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-              <ui:Click.CursorPosition>
-                <ui:CursorPosition Position="Center">
-                  <ui:CursorPosition.OffsetX>
-                    <InArgument x:TypeArguments="x:Int32" />
-                  </ui:CursorPosition.OffsetX>
-                  <ui:CursorPosition.OffsetY>
-                    <InArgument x:TypeArguments="x:Int32" />
-                  </ui:CursorPosition.OffsetY>
-                </ui:CursorPosition>
-              </ui:Click.CursorPosition>
-              <ui:Click.Target>
-                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="a67eacdd9cf7aa2ccb7e1b623a12bb98" Selector="&lt;webctrl tag='BUTTON' /&gt;" WaitForReady="INTERACTIVE" />
-              </ui:Click.Target>
-            </ui:Click>
-            <ui:GoBack Browser="{x:Null}" DisplayName="Go back" sap2010:WorkflowViewState.IdRef="GoBack_1" />
+          <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <ui:Delete ContinueOnError="{x:Null}" sap2010:WorkflowViewState.IdRef="Delete_1" Path="[file.FullName]" />
           </Sequence>
         </ActivityAction>
-      </ui:BrowserScope.Body>
-    </ui:BrowserScope>
-    <sads:DebugSymbol.Symbol>d1tDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxGaWxlc1xjbGlja1VwbG9hZC54YW1sDjsDZg4CAQFABUQdAgENRQVJCgIBCEoFZBcCAQJAvAFA4QECARBCP0JGAgEORRNFPAIBCUcJR38CAQtKqAJK4gICAQdQC2EWAgEDRxpHUgIBDFENXxgCAQVgDWBuAgEEXaABXcABAgEG</sads:DebugSymbol.Symbol>
+      </ui:ForEach.Body>
+    </ui:ForEach>
+    <sads:DebugSymbol.Symbol>d1VDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9cQnVzaW5lc3NcRmlsZUhhbmRsaW5nXERlbGV0ZVRlbXBmaWxlcy54YW1sDTwDXA4CAQFBBUYdAgENRwVODgIBCU8FWhICAQJEP0RFAgEQQzxDQAIBD0GxAUHVAQIBDkw1TF4CAQxJNkk9AgEKT3tPhAECAQdVC1cWAgEDVg1WdwIBBFZjVnQCAQU=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_6" sap:VirtualizedContainerService.HintSize="464,87" />
-      <sap2010:ViewStateData Id="Throw_2" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="464,208" />
-      <sap2010:ViewStateData Id="Click_1" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="GoBack_1" sap:VirtualizedContainerService.HintSize="314,22" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="336,292">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_3" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Delete_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="222,146">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="464,438" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="486,937">
+      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="314,280" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="336,658">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Logout_1" sap:VirtualizedContainerService.HintSize="526,1017" />
+      <sap2010:ViewStateData Id="2. Cleanup_1" sap:VirtualizedContainerService.HintSize="376,738" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

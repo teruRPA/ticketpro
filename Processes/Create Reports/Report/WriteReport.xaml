@@ -65,36 +65,34 @@
   <Sequence DisplayName="WriteReport" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="s:String[]" Default="[{}]" Name="departments" />
-      <Variable x:TypeArguments="x:String" Name="currentDepartment" />
-      <Variable x:TypeArguments="sd:DataTable" Name="allUsers" />
-      <Variable x:TypeArguments="sd:DataTable" Name="dataTableWithCorrectFields" />
+      <Variable x:TypeArguments="sd:DataTable" Name="reportIn" />
       <Variable x:TypeArguments="sd:DataTable" Name="users" />
+      <Variable x:TypeArguments="x:String" Name="reportFileName" />
+      <Variable x:TypeArguments="x:String" Name="usersFileName" />
+      <Variable x:TypeArguments="sd:DataTable" Name="reportOut" />
     </Sequence.Variables>
     <Sequence DisplayName="Assign Variables" sap2010:WorkflowViewState.IdRef="Sequence_2">
-      <Sequence.Variables>
-        <Variable x:TypeArguments="x:String" Name="usersFileName" />
-      </Sequence.Variables>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Departments Array" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_25" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentArray.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <OutArgument x:TypeArguments="s:String[]" x:Key="value">[departments]</OutArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="filename">departments.json</InArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
       <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Users filename" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_24" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
         <ui:InvokeWorkflowFile.Arguments>
           <InArgument x:TypeArguments="x:String" x:Key="key">usersFileName</InArgument>
           <OutArgument x:TypeArguments="x:String" x:Key="value">[usersFileName]</OutArgument>
         </ui:InvokeWorkflowFile.Arguments>
       </ui:InvokeWorkflowFile>
-      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Departments" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_25" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentArray.xaml">
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get ReportFile filename" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_38" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
         <ui:InvokeWorkflowFile.Arguments>
-          <OutArgument x:TypeArguments="s:String[]" x:Key="value">[departments]</OutArgument>
-          <InArgument x:TypeArguments="x:String" x:Key="filename">departments.json</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="key">reportFileName</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[reportFileName]</OutArgument>
         </ui:InvokeWorkflowFile.Arguments>
       </ui:InvokeWorkflowFile>
-      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Users DataTable" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_26" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\ReadExcelToDataTable.xaml">
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Deletes Reports\Report.xlsx if it exists so that a new file can be created" DisplayName="Invoke DeleteFile workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_46" UnSafe="False" WorkflowFileName="Library\Utility\FileHandling\DeleteFile.xaml">
         <ui:InvokeWorkflowFile.Arguments>
-          <InArgument x:TypeArguments="x:String" x:Key="FileName">[usersFileName]</InArgument>
-          <OutArgument x:TypeArguments="sd:DataTable" x:Key="Output">[users]</OutArgument>
-        </ui:InvokeWorkflowFile.Arguments>
-      </ui:InvokeWorkflowFile>
-      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Adds columns required by final outcome" DisplayName="Expand Datatable for report" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_21" UnSafe="False" WorkflowFileName="Business\DataTable\ExpandDataTable.xaml">
-        <ui:InvokeWorkflowFile.Arguments>
-          <InArgument x:TypeArguments="sd:DataTable" x:Key="usersArg">[users]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="FileName">[reportFileName]</InArgument>
         </ui:InvokeWorkflowFile.Arguments>
       </ui:InvokeWorkflowFile>
     </Sequence>
@@ -105,56 +103,73 @@
             <DelegateInArgument x:TypeArguments="x:String" Name="department" />
           </ActivityAction.Argument>
           <Sequence DisplayName="For each department" sap2010:WorkflowViewState.IdRef="Sequence_7">
-            <Sequence.Variables>
-              <Variable x:TypeArguments="sd:DataTable" Name="ticets" />
-            </Sequence.Variables>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Hardcoded path to &quot;temp\&quot; + department + &quot; Queue.xlsx&quot;" DisplayName="Get Queue Tickets from Excel" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_22" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\ReadExcelToDataTable.xaml">
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Users DataTable" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_26" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\ReadExcelToDataTable.xaml">
               <ui:InvokeWorkflowFile.Arguments>
-                <InArgument x:TypeArguments="x:String" x:Key="FileName">["temp\" + department + " Queue.xlsx"]</InArgument>
-                <OutArgument x:TypeArguments="sd:DataTable" x:Key="Output">[tickets]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="FileName">[usersFileName]</InArgument>
+                <OutArgument x:TypeArguments="sd:DataTable" x:Key="Output">[users]</OutArgument>
               </ui:InvokeWorkflowFile.Arguments>
             </ui:InvokeWorkflowFile>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Inputs: original excel file and edited datatable" DisplayName="Adding Tickets to Output Datatable" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_23" UnSafe="False" WorkflowFileName="Business\DataTable\Adding Tickets.xaml">
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke ExpandDataTable workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_42" UnSafe="False" WorkflowFileName="Processes\Create Reports\Report\ExpandDataTable.xaml">
               <ui:InvokeWorkflowFile.Arguments>
-                <InArgument x:TypeArguments="sd:DataTable" x:Key="ticketsArg">[tickets]</InArgument>
-                <InArgument x:TypeArguments="x:String" x:Key="currentDepartmentArg">[department]</InArgument>
-                <OutArgument x:TypeArguments="sd:DataTable" x:Key="outputTableArg">[populatedTable]</OutArgument>
-                <InArgument x:TypeArguments="sd:DataTable" x:Key="currentTableArg">[currentTable]</InArgument>
+                <InArgument x:TypeArguments="sd:DataTable" x:Key="Users">[users]</InArgument>
+                <OutArgument x:TypeArguments="sd:DataTable" x:Key="Report">[reportIn]</OutArgument>
               </ui:InvokeWorkflowFile.Arguments>
             </ui:InvokeWorkflowFile>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Hardcoded path to &quot;temp\&quot; + department + &quot; Archive.xlsx&quot;" DisplayName="Get Archive Tickets from Excel" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_28" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\ReadExcelToDataTable.xaml">
+            <ui:CommentOut DisplayName="Comment out" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+              <ui:CommentOut.Body>
+                <Sequence DisplayName="Ignored Activities">
+                  <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke PrintDataTableToLog workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_45" UnSafe="False" WorkflowFileName="Library\Utility\DataTable\PrintDataTableToLog.xaml">
+                    <ui:InvokeWorkflowFile.Arguments>
+                      <InArgument x:TypeArguments="sd:DataTable" x:Key="Table">[reportIn]</InArgument>
+                    </ui:InvokeWorkflowFile.Arguments>
+                  </ui:InvokeWorkflowFile>
+                </Sequence>
+              </ui:CommentOut.Body>
+            </ui:CommentOut>
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke AddingTickets workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_32" UnSafe="False" WorkflowFileName="Processes\Create Reports\Report\AddingTickets.xaml">
               <ui:InvokeWorkflowFile.Arguments>
-                <InArgument x:TypeArguments="x:String" x:Key="FileName">["temp\" + department + " Archive.xlsx"]</InArgument>
-                <OutArgument x:TypeArguments="sd:DataTable" x:Key="Output">[tickets]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="Department">[department]</InArgument>
+                <OutArgument x:TypeArguments="sd:DataTable" x:Key="ReportOut">[reportOut]</OutArgument>
+                <InArgument x:TypeArguments="sd:DataTable" x:Key="ReportIn">[reportIn]</InArgument>
               </ui:InvokeWorkflowFile.Arguments>
             </ui:InvokeWorkflowFile>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Inputs: original excel file and edited datatable" DisplayName="Adding Tickets to Output Datatable" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_29" UnSafe="False" WorkflowFileName="Business\DataTable\Adding Tickets.xaml">
+            <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
+              <Assign.To>
+                <OutArgument x:TypeArguments="sd:DataTable">[reportIn]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="sd:DataTable">[reportOut]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke SortTable workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_33" UnSafe="False" WorkflowFileName="Processes\Create Reports\SortTable.xaml">
               <ui:InvokeWorkflowFile.Arguments>
-                <InArgument x:TypeArguments="sd:DataTable" x:Key="ticketsArg">[tickets]</InArgument>
-                <InArgument x:TypeArguments="x:String" x:Key="currentDepartmentArg">[currentDepartment]</InArgument>
-                <OutArgument x:TypeArguments="sd:DataTable" x:Key="outputTableArg">[populatedTable]</OutArgument>
-                <InArgument x:TypeArguments="sd:DataTable" x:Key="currentTableArg">[currentTable]</InArgument>
+                <InArgument x:TypeArguments="sd:DataTable" x:Key="Table">[reportIn]</InArgument>
+                <OutArgument x:TypeArguments="sd:DataTable" x:Key="OutTable">[reportOut]</OutArgument>
               </ui:InvokeWorkflowFile.Arguments>
             </ui:InvokeWorkflowFile>
-            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Sorts on completed" DisplayName="Sort Datatable" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_15" UnSafe="False" WorkflowFileName="Business\DataTable\sort Table.xaml">
+            <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke AppendDataTableToExcel workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_44" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\AppendDataTableToExcel.xaml">
               <ui:InvokeWorkflowFile.Arguments>
-                <InArgument x:TypeArguments="sd:DataTable" x:Key="tableArg">[populatedTable]</InArgument>
-                <OutArgument x:TypeArguments="sd:DataTable" x:Key="outTableArg">[finishedTable]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="FileName">[reportFileName]</InArgument>
+                <InArgument x:TypeArguments="sd:DataTable" x:Key="DataTable">[reportOut]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="SheetName">[department]</InArgument>
               </ui:InvokeWorkflowFile.Arguments>
             </ui:InvokeWorkflowFile>
           </Sequence>
         </ActivityAction>
       </ui:ForEach.Body>
     </ui:ForEach>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke SaveDataTableAsExcel workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_30" UnSafe="False" WorkflowFileName="Library\Utility\XLSX\SaveDataTableAsExcel.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <sads:DebugSymbol.Symbol>d2NDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xSZXBvcnRcMy4gV3JpdGUgUmVwb3J0LnhhbWwvQQObAQ4CAQFDNkM8AgECSQVkEAIBJWUFlAESAgEFlQEFmQEdAgEDTQdSHwIBNVMHWB8CATBZB14fAgEqXwdjHwIBJmV4ZYcBAgEjawuRARYCAQaVAcIBlQHyAQIBBFBBUFACAThPPk9LAgE3TbIBTd8BAgE2VUNVUAIBM1ZDVlMCATJTrwFT2QECATFcRlxNAgEuW0NbUgIBLFmzAVnjAQIBK2FHYU4CAShfhgJfrwICASdvDXQlAgEedQ18JQIBF30NggElAgESgwENigElAgELiwENkAElAgEHckxyVQIBInFJcW8CASBvsQJv4QICAR95VHlkAgEdelR6YgIBHHdPd1gCARt4VXhhAgEZdZ0CdcUCAgEYgAFMgAFVAgEWf0l/cQIBFH21An3lAgIBE4cBVIcBZAIBEYgBVIgBYgIBEIUBT4UBWAIBD4YBVYYBaAIBDYMBnQKDAcUCAgEMjQFNjQFdAgEKjgFRjgFgAgEJiwHrAYsBjwICAQg=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d19DOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xSZXBvcnRcV3JpdGVSZXBvcnQueGFtbC9BA6IBDgIBAUM2QzwCAQJKBWIQAgEvYwWgARICAQNLB1AfAgE+UQdWHwIBOVcHXB8CATRdB2EfAgEwY3hjhwECAS1pC50BFgIBBE1DTVACAUFOQ05TAgFAS7UBS98BAgE/VEFUUAIBPFM+U0sCATtRsgFR3wECATpaQVpRAgE3WT5ZTAIBNle3AVfkAQIBNV9DX1MCATJdqQJd1wICATFqDW8lAgEncA11JQIBIXYNgAEdAgEggQENhwElAgEYiAENjwEWAgETkAENlQElAgENlgENnAElAgEFbUxtUwIBK2xJbFgCASlquQFq6QECAShySnJRAgElc0xzVgIBI3DFAXD7AQIBIoUBTYUBVwIBHoMBS4MBVwIBHIQBT4QBWgIBGoEBwwGBAfcBAgEZjQE8jQFHAgEWigE9igFHAgEUkgFKkgFUAgERkwFOkwFZAgEPkAG/AZAB6AECAQ6YAUmYAVkCAQuZAU6ZAVkCAQmaAUqaAVYCAQeWAcwBlgH+AQIBBg==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_25" sap:VirtualizedContainerService.HintSize="314,87">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="InvokeWorkflowFile_24" sap:VirtualizedContainerService.HintSize="314,87">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -163,11 +178,26 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_25" sap:VirtualizedContainerService.HintSize="314,87">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_38" sap:VirtualizedContainerService.HintSize="314,87">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_46" sap:VirtualizedContainerService.HintSize="314,108">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="352,613">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -178,15 +208,38 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_21" sap:VirtualizedContainerService.HintSize="314,114">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_42" sap:VirtualizedContainerService.HintSize="314,87">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="352,619">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_45" sap:VirtualizedContainerService.HintSize="314,51" />
+      <sap2010:ViewStateData Id="CommentOut_2" sap:VirtualizedContainerService.HintSize="314,51" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_32" sap:VirtualizedContainerService.HintSize="314,87">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_33" sap:VirtualizedContainerService.HintSize="314,87">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_44" sap:VirtualizedContainerService.HintSize="314,87">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsPinned">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,910">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -194,70 +247,21 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_22" sap:VirtualizedContainerService.HintSize="314,129">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_23" sap:VirtualizedContainerService.HintSize="314,114">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_28" sap:VirtualizedContainerService.HintSize="314,129">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_29" sap:VirtualizedContainerService.HintSize="314,114">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_15" sap:VirtualizedContainerService.HintSize="314,114">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,884">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="352,1018">
+      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="352,1044">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsPinned">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_30" sap:VirtualizedContainerService.HintSize="352,51" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="374,1892">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="374,1821">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Pipe_1" sap:VirtualizedContainerService.HintSize="414,1972">
+      <sap2010:ViewStateData Id="Pipe_1" sap:VirtualizedContainerService.HintSize="414,1901">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="ShouldCollapseAll">True</x:Boolean>

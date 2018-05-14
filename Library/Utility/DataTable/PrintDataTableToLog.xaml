@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="SortTable" this:SortTable.Table="[New DataTable]"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="PrintListToLog" this:PrintListToLog.Table="[new DataTable]"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -13,12 +13,11 @@
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="Table" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="OutTable" Type="OutArgument(sd:DataTable)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap2010:WorkflowViewState.IdRef>__3__Adding_formula_1</sap2010:WorkflowViewState.IdRef>
+  <sap2010:WorkflowViewState.IdRef>PrintListToLog_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -62,58 +61,31 @@
       <AssemblyReference>WindowsBase</AssemblyReference>
       <AssemblyReference>PresentationCore</AssemblyReference>
       <AssemblyReference>System.Xaml</AssemblyReference>
-      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
-      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
       <AssemblyReference>System.ServiceModel</AssemblyReference>
-      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualStudio.Services.Common</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Sort Table" sap2010:WorkflowViewState.IdRef="Sequence_4">
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke PrintDataTableToLog workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Utility\DataTable\PrintDataTableToLog.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <InArgument x:TypeArguments="sd:DataTable" x:Key="Table">[Table]</InArgument>
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_23">
-      <Assign.To>
-        <OutArgument x:TypeArguments="x:String">[Table.DefaultView.Sort]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[("[Completed] desc, [Expired] desc")]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_24">
-      <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataTable">[Table]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataTable">[Table.DefaultView.ToTable]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_25">
-      <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataTable">[OutTable]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataTable">[Table]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <sads:DebugSymbol.Symbol>d1ZDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xTb3J0VGFibGUueGFtbA4BVAFkAQJHA2YOAgEBSAVMHQIBD00FVA4CAQxVBVwOAgEHXQVkDgIBAkpCSkkCARFIwAFI9AECARBSMFJWAgEOTzFPSQIBDVo0Wk8CAQpXNVc8AgEIYjRiOwIBBV81Xz8CAQM=</sads:DebugSymbol.Symbol>
+  <Sequence DisplayName="PrintListToLog" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="tableAsText" />
+    </Sequence.Variables>
+    <ui:OutputDataTable DataTable="[Table]" DisplayName="Output data table" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[tableAsText]" />
+    <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[tableAsText]" />
+    <sads:DebugSymbol.Symbol>d2FDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcVXRpbGl0eVxEYXRhVGFibGVcUHJpbnREYXRhVGFibGVUb0xvZy54YW1sBwFeAW4BAkUDTA4CAQFJBUmYAQIBBUoFSoQBAgECSYYBSZUBAgEISSNJLAIBBkpySoEBAgED</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Assign_23" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_24" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_25" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,511">
+      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="336,277">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="__3__Adding_formula_1" sap:VirtualizedContainerService.HintSize="376,711" />
+      <sap2010:ViewStateData Id="PrintListToLog_1" sap:VirtualizedContainerService.HintSize="376,357" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Adding_completed_tickets" this:Adding_completed_tickets.ticketsArg="[new DataTable]" this:Adding_completed_tickets.DataTableBaseArg="[new DataTable]"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Adding_completed_tickets" this:Adding_completed_tickets.Tickets="[new DataTable]" this:Adding_completed_tickets.ReportIn="[new DataTable]"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -13,9 +13,9 @@
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="ticketsArg" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="DataTableBaseArg" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="OutTableBaseArg" Type="OutArgument(sd:DataTable)" />
+    <x:Property Name="Tickets" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="ReportIn" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="ReportOut" Type="OutArgument(sd:DataTable)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -81,15 +81,13 @@
       <Variable x:TypeArguments="s:DateTime" Name="thisCreatedDate" />
       <Variable x:TypeArguments="s:DateTime" Name="TimeNow" />
       <Variable x:TypeArguments="x:Int32" Name="age" />
-      <Variable x:TypeArguments="sd:DataTable" Name="tickets" />
-      <Variable x:TypeArguments="sd:DataTable" Name="DataTableBase" />
       <Variable x:TypeArguments="x:Int32" Name="expired" />
     </Sequence.Variables>
     <Sequence DisplayName="Assigning Variables" sap2010:WorkflowViewState.IdRef="Sequence_12">
       <Sequence.Variables>
         <Variable x:TypeArguments="x:String" Name="expiredString" />
       </Sequence.Variables>
-      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="expiredString to expired" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Common\getEnvironmentVariable.xaml">
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="expiredString to expired" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
         <ui:InvokeWorkflowFile.Arguments>
           <InArgument x:TypeArguments="x:String" x:Key="key">ExpirationInDays</InArgument>
           <OutArgument x:TypeArguments="x:String" x:Key="value">[expiredString]</OutArgument>
@@ -103,24 +101,8 @@
           <InArgument x:TypeArguments="x:Int32">[cint(expiredString)]</InArgument>
         </Assign.Value>
       </Assign>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
-        <Assign.To>
-          <OutArgument x:TypeArguments="sd:DataTable">[tickets]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="sd:DataTable">[ticketsArg]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
-        <Assign.To>
-          <OutArgument x:TypeArguments="sd:DataTable">[DataTableBase]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="sd:DataTable">[DataTableBaseArg]</InArgument>
-        </Assign.Value>
-      </Assign>
     </Sequence>
-    <ui:ForEachRow DataTable="[tickets]" DisplayName="Iterate through tables" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
+    <ui:ForEachRow DataTable="[Tickets]" DisplayName="Iterate through tables" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
       <ui:ForEachRow.Body>
         <ActivityAction x:TypeArguments="sd:DataRow">
           <ActivityAction.Argument>
@@ -130,11 +112,11 @@
             <Sequence.Variables>
               <Variable x:TypeArguments="x:String" Name="CreatedDateString" />
             </Sequence.Variables>
-            <ui:ForEachRow DataTable="[DataTableBase]" DisplayName="For each row" sap2010:WorkflowViewState.IdRef="ForEachRow_3">
+            <ui:ForEachRow DataTable="[ReportIn]" DisplayName="For each row" sap2010:WorkflowViewState.IdRef="ForEachRow_3">
               <ui:ForEachRow.Body>
                 <ActivityAction x:TypeArguments="sd:DataRow">
                   <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="reportRow" />
                   </ActivityAction.Argument>
                   <Sequence DisplayName="Inside DataTableBase" sap2010:WorkflowViewState.IdRef="Sequence_10">
                     <Sequence.Variables>
@@ -150,7 +132,7 @@
                         <OutArgument x:TypeArguments="x:String">[name]</OutArgument>
                       </ui:GetRowItem.Value>
                     </ui:GetRowItem>
-                    <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Employee" DisplayName="Get InnerName" sap2010:WorkflowViewState.IdRef="GetRowItem_19" Row="[row]">
+                    <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Employee" DisplayName="Get InnerName" sap2010:WorkflowViewState.IdRef="GetRowItem_19" Row="[reportRow]">
                       <ui:GetRowItem.Value>
                         <OutArgument x:TypeArguments="x:String">[innerName]</OutArgument>
                       </ui:GetRowItem.Value>
@@ -163,7 +145,7 @@
                               <OutArgument x:TypeArguments="x:String">[CreatedDateString]</OutArgument>
                             </ui:GetRowItem.Value>
                           </ui:GetRowItem>
-                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke workflow file" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Business\DataTable\FindAgeTickets.xaml">
+                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke FindAgeTickets workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Processes\FindAgeTickets.xaml">
                             <ui:InvokeWorkflowFile.Arguments>
                               <OutArgument x:TypeArguments="x:Int32" x:Key="ageArg">[age]</OutArgument>
                               <InArgument x:TypeArguments="ui:GenericValue" x:Key="CreatedDateArg">[CreatedDateString]</InArgument>
@@ -175,7 +157,7 @@
                                 <Sequence.Variables>
                                   <Variable x:TypeArguments="ui:GenericValue" Name="foundActive" />
                                 </Sequence.Variables>
-                                <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Active" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_15" Row="[row]">
+                                <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Active" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_15" Row="[reportRow]">
                                   <ui:GetRowItem.Value>
                                     <OutArgument x:TypeArguments="ui:GenericValue">[foundActive]</OutArgument>
                                   </ui:GetRowItem.Value>
@@ -190,7 +172,7 @@
                                 </Assign>
                                 <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
                                   <Assign.To>
-                                    <OutArgument x:TypeArguments="x:Object">[row("Active")]</OutArgument>
+                                    <OutArgument x:TypeArguments="x:Object">[reportRow("Active")]</OutArgument>
                                   </Assign.To>
                                   <Assign.Value>
                                     <InArgument x:TypeArguments="x:Object">[AddingOne+1]</InArgument>
@@ -203,7 +185,7 @@
                                 <Sequence.Variables>
                                   <Variable x:TypeArguments="ui:GenericValue" Name="foundExpired" />
                                 </Sequence.Variables>
-                                <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Expired" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_16" Row="[row]">
+                                <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Expired" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_16" Row="[reportRow]">
                                   <ui:GetRowItem.Value>
                                     <OutArgument x:TypeArguments="ui:GenericValue">[foundExpired]</OutArgument>
                                   </ui:GetRowItem.Value>
@@ -218,7 +200,7 @@
                                 </Assign>
                                 <Assign sap2010:WorkflowViewState.IdRef="Assign_15">
                                   <Assign.To>
-                                    <OutArgument x:TypeArguments="x:Object">[row("Expired")]</OutArgument>
+                                    <OutArgument x:TypeArguments="x:Object">[reportRow("Expired")]</OutArgument>
                                   </Assign.To>
                                   <Assign.Value>
                                     <InArgument x:TypeArguments="x:Object">[AddingOne+1]</InArgument>
@@ -243,24 +225,22 @@
     </ui:ForEachRow>
     <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
       <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataTable">[OutTableBaseArg]</OutArgument>
+        <OutArgument x:TypeArguments="sd:DataTable">[ReportOut]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataTable">[DataTableBase]</InArgument>
+        <InArgument x:TypeArguments="sd:DataTable">[ReportIn]</InArgument>
       </Assign.Value>
     </Assign>
-    <sads:DebugSymbol.Symbol>d19DOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9cQnVzaW5lc3NcRGF0YVRhYmxlXEFkZGluZyBBY3RpdmVFeHBpcmVkIFRpY2tldHMueGFtbEkBuAEByAEBAwF3AYcBAQJKA/0BDgIBAU4LTjoCAQJYBXoQAgFSewXzARUCAQj0AQX7AQ4CAQNcB2EfAgFiYgdpEAIBXWoHcRACAVhyB3kQAgFTex57KQIBUIEBC/ABFgIBCfkBNPkBQwIBBvYBNfYBRgIBBF9BX1ACAWVePl5OAgFkXLcBXNsBAgFjZzFnRgIBYGQyZDsCAV5vNm9CAgFbbDdsQAIBWXc2d0gCAVZ0N3RGAgFUhQEN7wEdAgEKhQEmhQE3AgFOiwET7AEeAgELjwEbjwFKAgENkgFDkgFGAgEMlAEVmAElAgFImQEVnQElAgFCngEV6wEaAgEOlgFBlgFHAgFMlAGxAZQBvgECAUqUAViUAV8CAUmbAUGbAUwCAUaZAbMBmQG6AQIBRJkBWJkBYgIBQ54BI54BPQIBD6ABGeYBJAIBE+kBGekBdgIBEqEBG6UBKwIBPKYBG6sBMwIBNqwBG+UBIAIBFKMBR6MBWgIBQKEBvAGhAckBAgE+oQFeoQFnAgE9qQFkqQF3AgE6qAFVqAFaAgE4pgHHAaYB7wECATesASmsAT4CARWuAR/HASoCASfKAR/jASoCARiyASG2ATECATC3ASG+ASoCASy/ASHGASoCASjOASHSATECASHTASHaASoCAR3bASHiASoCARm0AVS0AWECATSyAbwBsgHDAQIBMrIBZLIBbAIBMbwBS7wBXgIBL7kBTLkBVwIBLcQBTMQBWQIBKsEBTcEBXAIBKdABVNABYgIBJc4BvQHOAcQBAgEjzgFkzgFtAgEi2AFL2AFfAgEg1QFM1QFXAgEe4AFM4AFZAgEb3QFN3QFdAgEa</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d25DOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xSZXBvcnRcQWRkaW5nQWN0aXZlRXhwaXJlZFRpY2tldHMueGFtbEMBrQEBvQEBAwF0AYQBAQJKA+sBDgIBAU4LTjoCAQJWBWgQAgFSaQXhARUCAQjiAQXpAQ4CAQNaB18fAgFYYAdnEAIBU2keaSkCAVBvC94BFgIBCecBNOcBPgIBBuQBNeQBQAIBBF1BXVACAVtcPlxOAgFaWrcBWuQBAgFZZTFlRgIBVmIyYjsCAVRzDd0BHQIBCnMmczICAU55E9oBHgIBC30bfUoCAQ2AAUOAAUYCAQyCARWGASUCAUiHARWLASUCAUKMARXZARoCAQ6EAUGEAUcCAUyCAbEBggG+AQIBSoIBWIIBXwIBSYkBQYkBTAIBRocBswGHAcABAgFEhwFYhwFiAgFDjAEjjAE9AgEPjgEZ1AEkAgET1wEZ1wF2AgESjwEbkwErAgE8lAEbmQEzAgE2mgEb0wEgAgEUkQFHkQFaAgFAjwG8AY8ByQECAT6PAV6PAWcCAT2XAWSXAXcCATqWAVWWAVoCATiUAdEBlAHwAQIBN5oBKZoBPgIBFZwBH7UBKgIBJ7gBH9EBKgIBGKABIaQBMQIBMKUBIawBKgIBLK0BIbQBKgIBKLwBIcABMQIBIcEBIcgBKgIBHckBIdABKgIBGaIBVKIBYQIBNKABvAGgAckBAgEyoAFkoAFsAgExqgFLqgFeAgEvpwFMpwFXAgEtsgFMsgFZAgEqrwFNrwFiAgEpvgFUvgFiAgElvAG9AbwBygECASO8AWS8AW0CASLGAUvGAV8CASDDAUzDAVcCAR7OAUzOAVkCARvLAU3LAWMCARo=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
       <sap2010:ViewStateData Id="InvokeWorkflowFile_3" sap:VirtualizedContainerService.HintSize="314,87" />
       <sap2010:ViewStateData Id="Assign_12" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_12" sap:VirtualizedContainerService.HintSize="1162,511">
+      <sap2010:ViewStateData Id="Sequence_12" sap:VirtualizedContainerService.HintSize="1162,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -268,7 +248,7 @@
       <sap2010:ViewStateData Id="GetRowItem_17" sap:VirtualizedContainerService.HintSize="1058,64" />
       <sap2010:ViewStateData Id="GetRowItem_19" sap:VirtualizedContainerService.HintSize="1058,64" />
       <sap2010:ViewStateData Id="GetRowItem_18" sap:VirtualizedContainerService.HintSize="697,64" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_4" sap:VirtualizedContainerService.HintSize="697,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_5" sap:VirtualizedContainerService.HintSize="697,87" />
       <sap2010:ViewStateData Id="GetRowItem_15" sap:VirtualizedContainerService.HintSize="314,64" />
       <sap2010:ViewStateData Id="Assign_10" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_14" sap:VirtualizedContainerService.HintSize="314,60" />
@@ -344,15 +324,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="1140,60" />
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="1184,2566">
+      <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="1162,60" />
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="1184,2106">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="___Adding_completed_tickets_1" sap:VirtualizedContainerService.HintSize="1224,2646" />
+      <sap2010:ViewStateData Id="___Adding_completed_tickets_1" sap:VirtualizedContainerService.HintSize="1224,2186" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

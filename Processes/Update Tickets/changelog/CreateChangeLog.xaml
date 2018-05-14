@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="SortTable" this:SortTable.Table="[New DataTable]"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="ExpandDataTable"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -8,17 +8,15 @@
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
  xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
- xmlns:this="clr-namespace:"
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Table" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="OutTable" Type="OutArgument(sd:DataTable)" />
+    <x:Property Name="ticketLogArg" Type="OutArgument(sd:DataTable)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap2010:WorkflowViewState.IdRef>__3__Adding_formula_1</sap2010:WorkflowViewState.IdRef>
+  <sap2010:WorkflowViewState.IdRef>ExpandDataTable_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -43,6 +41,7 @@
       <x:String>UiPath.Core.Activities</x:String>
       <x:String>System.Windows.Markup</x:String>
       <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.Globalization</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -68,52 +67,34 @@
       <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Sort Table" sap2010:WorkflowViewState.IdRef="Sequence_4">
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke PrintDataTableToLog workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Utility\DataTable\PrintDataTableToLog.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <InArgument x:TypeArguments="sd:DataTable" x:Key="Table">[Table]</InArgument>
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_23">
+  <Sequence sap2010:Annotation.AnnotationText="Creates a new table and returns it" DisplayName="Builds ticket update log" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable" Name="ticketLog" />
+    </Sequence.Variables>
+    <ui:BuildDataTable DataTable="[ticketLog]" DisplayName="Build data table" sap2010:WorkflowViewState.IdRef="BuildDataTable_1" TableInfo="&lt;NewDataSet&gt;&#xD;&#xA;  &lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&#xD;&#xA;    &lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:MainDataTable=&quot;TableName&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&#xD;&#xA;      &lt;xs:complexType&gt;&#xD;&#xA;        &lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&#xD;&#xA;          &lt;xs:element name=&quot;TableName&quot;&gt;&#xD;&#xA;            &lt;xs:complexType&gt;&#xD;&#xA;              &lt;xs:sequence&gt;&#xD;&#xA;                &lt;xs:element name=&quot;date&quot; type=&quot;xs:dateTime&quot; /&gt;&#xD;&#xA;                &lt;xs:element name=&quot;case&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xD;&#xA;                &lt;xs:element name=&quot;event&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&#xD;&#xA;              &lt;/xs:sequence&gt;&#xD;&#xA;            &lt;/xs:complexType&gt;&#xD;&#xA;          &lt;/xs:element&gt;&#xD;&#xA;        &lt;/xs:choice&gt;&#xD;&#xA;      &lt;/xs:complexType&gt;&#xD;&#xA;    &lt;/xs:element&gt;&#xD;&#xA;  &lt;/xs:schema&gt;&#xD;&#xA;  &lt;TableName&gt;&#xD;&#xA;    &lt;date&gt;1900-01-01T00:00:00+01:00&lt;/date&gt;&#xD;&#xA;    &lt;case&gt;error&lt;/case&gt;&#xD;&#xA;    &lt;event&gt;sanitizethisrow&lt;/event&gt;&#xD;&#xA;  &lt;/TableName&gt;&#xD;&#xA;&lt;/NewDataSet&gt;" />
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
-        <OutArgument x:TypeArguments="x:String">[Table.DefaultView.Sort]</OutArgument>
+        <OutArgument x:TypeArguments="sd:DataTable">[ticketLogArg]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[("[Completed] desc, [Expired] desc")]</InArgument>
+        <InArgument x:TypeArguments="sd:DataTable">[ticketLog]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_24">
-      <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataTable">[Table]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataTable">[Table.DefaultView.ToTable]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <Assign sap2010:WorkflowViewState.IdRef="Assign_25">
-      <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataTable">[OutTable]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataTable">[Table]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <sads:DebugSymbol.Symbol>d1ZDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xTb3J0VGFibGUueGFtbA4BVAFkAQJHA2YOAgEBSAVMHQIBD00FVA4CAQxVBVwOAgEHXQVkDgIBAkpCSkkCARFIwAFI9AECARBSMFJWAgEOTzFPSQIBDVo0Wk8CAQpXNVc8AgEIYjRiOwIBBV81Xz8CAQM=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1xDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9cQnVzaW5lc3NcRGF0YVRhYmxlXGNoYW5nZWxvZ1xDcmVhdGVDaGFuZ2VMb2cueGFtbAZGA1QOAgEBSgVKgg0CAQdLBVIOAgECSiJKLwIBCFA0UD8CAQVNNU1DAgED</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Assign_23" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_24" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_25" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,511">
+      <sap2010:ViewStateData Id="BuildDataTable_1" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="336,310">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="__3__Adding_formula_1" sap:VirtualizedContainerService.HintSize="376,711" />
+      <sap2010:ViewStateData Id="ExpandDataTable_1" sap:VirtualizedContainerService.HintSize="376,470" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Save Ticket" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="Testscrape3_1"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="ChangePriority"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
@@ -7,8 +7,21 @@
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:this="clr-namespace:"
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="NewStatus" Type="InArgument(x:String)" />
+  </x:Members>
+  <this:ChangePriority.NewStatus>
+    <InArgument x:TypeArguments="x:String">
+      <Literal x:TypeArguments="x:String" Value="" />
+    </InArgument>
+  </this:ChangePriority.NewStatus>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap2010:WorkflowViewState.IdRef>Testscrape3_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -59,85 +72,70 @@
       <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Save Ticket" sap2010:WorkflowViewState.IdRef="Sequence_2">
-    <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketPRO'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="8b44bcf52a48c606c581536ca65a2afd" Selector="&lt;html app='chrome.exe' title='TicketPRO 2000' /&gt;">
+  <Sequence DisplayName="ChangePriority" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <ui:BrowserScope Browser="{x:Null}" SearchScope="{x:Null}" UiBrowser="{x:Null}" BrowserType="Chrome" DisplayName="Attach Browser 'chrome.exe TicketPRO'" sap2010:WorkflowViewState.IdRef="BrowserScope_1" InformativeScreenshot="a5787799147d175226c57777cff4f1a5" Selector="&lt;html app='chrome.exe' title='TicketPRO 2000' /&gt;" TimeoutMS="1500">
       <ui:BrowserScope.Body>
         <ActivityAction x:TypeArguments="x:Object">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
           </ActivityAction.Argument>
           <Sequence DisplayName="Inside Browser" sap2010:WorkflowViewState.IdRef="Sequence_1">
-            <Sequence.Variables>
-              <Variable x:TypeArguments="ui:GenericValue" Name="Selector" />
-            </Sequence.Variables>
-            <ui:OnUiElementAppear Body="{x:Null}" ContinueOnError="{x:Null}" FoundElement="{x:Null}" DisplayName="Find UiElement (Save ticket)" sap2010:WorkflowViewState.IdRef="OnUiElementAppear_4" RepeatForever="False" WaitActive="False" WaitVisible="False">
+            <ui:OnUiElementAppear ContinueOnError="{x:Null}" FoundElement="{x:Null}" DisplayName="Find UiElement (Prdropdow)" sap2010:WorkflowViewState.IdRef="OnUiElementAppear_6" RepeatForever="False" WaitActive="False" WaitVisible="False">
+              <ui:OnUiElementAppear.Body>
+                <Sequence DisplayName="Select Priority" sap2010:WorkflowViewState.IdRef="Sequence_31">
+                  <ui:SelectItem ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select priority" sap2010:WorkflowViewState.IdRef="SelectItem_4" Item="[NewStatus]">
+                    <ui:SelectItem.Items>
+                      <scg:List x:TypeArguments="x:String" Capacity="8">
+                        <x:String>Very low</x:String>
+                        <x:String>Low</x:String>
+                        <x:String>Normal</x:String>
+                        <x:String>High</x:String>
+                        <x:String>Critical</x:String>
+                      </scg:List>
+                    </ui:SelectItem.Items>
+                    <ui:SelectItem.Target>
+                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" Selector="&lt;webctrl id='priority' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
+                    </ui:SelectItem.Target>
+                  </ui:SelectItem>
+                </Sequence>
+              </ui:OnUiElementAppear.Body>
               <ui:OnUiElementAppear.Target>
-                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="6f50eac7e188dcf15969fb02835c8c4e" Selector="&lt;webctrl id='owner' tag='SELECT' /&gt;" TimeoutMS="1500" WaitForReady="INTERACTIVE" />
+                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="fdf0940c2600c909f6a9b9a7e013124f" Selector="&lt;webctrl id='priority' tag='SELECT' /&gt;" WaitForReady="INTERACTIVE" />
               </ui:OnUiElementAppear.Target>
             </ui:OnUiElementAppear>
-            <ui:Click DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'BUTTON'" sap2010:WorkflowViewState.IdRef="Click_5" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="False" SimulateClick="False">
-              <ui:Click.CursorPosition>
-                <ui:CursorPosition Position="Center">
-                  <ui:CursorPosition.OffsetX>
-                    <InArgument x:TypeArguments="x:Int32" />
-                  </ui:CursorPosition.OffsetX>
-                  <ui:CursorPosition.OffsetY>
-                    <InArgument x:TypeArguments="x:Int32" />
-                  </ui:CursorPosition.OffsetY>
-                </ui:CursorPosition>
-              </ui:Click.CursorPosition>
-              <ui:Click.Target>
-                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="b999a8f6abb133cc2b4b9fdf68f5ee05" Selector="&lt;webctrl aaname='Save' tag='BUTTON' /&gt;" WaitForReady="INTERACTIVE" />
-              </ui:Click.Target>
-            </ui:Click>
           </Sequence>
         </ActivityAction>
       </ui:BrowserScope.Body>
     </ui:BrowserScope>
-    <Delay DisplayName="Delay one sec" Duration="00:00:01" sap2010:WorkflowViewState.IdRef="Delay_5" />
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke sendGlobalEnter workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\sendGlobalEnter.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke sendGlobalEnter workflow" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Library\sendGlobalEnter.xaml">
-      <ui:InvokeWorkflowFile.Arguments>
-        <scg:Dictionary x:TypeArguments="x:String, Argument" />
-      </ui:InvokeWorkflowFile.Arguments>
-    </ui:InvokeWorkflowFile>
-    <sads:DebugSymbol.Symbol>d2NDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXFRpY2tldFxTYXZlVGlja2V0LnhhbWwQPgNtDgIBAT8FYBcCAQhhBWFoAgEGYgVmHQIBBGcFax0CAQI/pgI/3gICARBFC10WAgEJYTFhOwIBB2K8AWLaAQIBBWe8AWfaAQIBA0kNTSQCAQxODVwYAgEKSdUBSdwBAgENS4sBS7YBAgEPS8EBS8cBAgEOWqABWs4BAgEL</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d2dDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcQ2hyb21lXE5hdmJhclxUaWNrZXRzXFRpY2tldFxDaGFuZ2VQcmlvcml0eS54YW1sDRIHEjYBAksDbw4CAQFMBW0XAgECTJECTMkCAgENTNQCTNoCAgEMUgtqFgIBA1MNaSQCAQRVEWQcAgEHU8MBU8oBAgEFZ6ABZ84BAgEGVhNjIwIBCFa8AVbJAQIBCWFtYZsBAgEL</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="OnUiElementAppear_4" sap:VirtualizedContainerService.HintSize="314,51">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Click_5" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="336,321">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="414,467" />
-      <sap2010:ViewStateData Id="Delay_5" sap:VirtualizedContainerService.HintSize="414,22" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="414,87" />
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="414,87" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="436,907">
+      <sap2010:ViewStateData Id="SelectItem_4" sap:VirtualizedContainerService.HintSize="314,96" />
+      <sap2010:ViewStateData Id="Sequence_31" sap:VirtualizedContainerService.HintSize="336,220">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Testscrape3_1" sap:VirtualizedContainerService.HintSize="476,987" />
+      <sap2010:ViewStateData Id="OnUiElementAppear_6" sap:VirtualizedContainerService.HintSize="414,396" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,520">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="450,666" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="472,790">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Testscrape3_1" sap:VirtualizedContainerService.HintSize="512,870" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

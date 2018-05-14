@@ -63,14 +63,10 @@
     </Sequence.Variables>
     <ui:SendHotkey DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" Activate="True" ClickBeforeTyping="False" DisplayName="Send hotkey 'enter'" EmptyField="False" sap2010:WorkflowViewState.IdRef="SendHotkey_1" Key="enter" KeyModifiers="None" SendWindowMessages="True" SpecialKey="True">
       <ui:SendHotkey.Target>
-        <ui:Target Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="dde10945bb54edea6275c2d416496d99" Selector="&lt;html app='chrome.exe' title='What is Enter?' /&gt;&lt;webctrl aaname='Enter key' parentid='main-content' tag='IMG' /&gt;" WaitForReady="INTERACTIVE">
-          <ui:Target.ClippingRegion>
-            <ui:Region Rectangle="470, 107, 67, 81" />
-          </ui:Target.ClippingRegion>
-        </ui:Target>
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" InformativeScreenshot="dde10945bb54edea6275c2d416496d99" TimeoutMS="2000" WaitForReady="INTERACTIVE" />
       </ui:SendHotkey.Target>
     </ui:SendHotkey>
-    <sads:DebugSymbol.Symbol>d0tDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcc2VuZEdsb2JhbEVudGVyLnhhbWwDOwNKDgIBAUAFSBUCAQJCfkL8AQIBAw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0tDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XExpYnJhcnlcc2VuZEdsb2JhbEVudGVyLnhhbWwDOwNGDgIBAUAFRBUCAQJCmAFCngECAQM=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>

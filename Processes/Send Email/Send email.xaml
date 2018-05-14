@@ -1,0 +1,240 @@
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="4. Send Mail" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="4. Send Mail_1"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:snm="clr-namespace:System.Net.Mail;assembly=System"
+ xmlns:ui="http://schemas.uipath.com/workflow/activities"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>UiPath.Core</AssemblyReference>
+      <AssemblyReference>UiPath.Core.Activities</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Send Mail" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="sender" />
+      <Variable x:TypeArguments="x:String" Name="filenameReport" />
+      <Variable x:TypeArguments="x:String" Default="temp1234561" Name="password" />
+      <Variable x:TypeArguments="x:String" Name="receiver" />
+      <Variable x:TypeArguments="x:String" Name="port" />
+      <Variable x:TypeArguments="x:String" Name="server" />
+      <Variable x:TypeArguments="snm:MailMessage" Name="mail" />
+      <Variable x:TypeArguments="snm:Attachment" Name="attachment" />
+      <Variable x:TypeArguments="x:String" Name="filenameChangelog" />
+    </Sequence.Variables>
+    <Sequence DisplayName="Get variables from json" sap2010:WorkflowViewState.IdRef="Sequence_1">
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get filename report" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">reportFileName</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[filenameReport]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get filename changelog" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_14" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">changelogFileName</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[filenameChangelog]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get server" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">server</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[server]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get sender" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">sender</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[sender]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get reciever" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_17" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">receiver</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[receiver]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get port" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_18" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">port</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[port]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+    </Sequence>
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_4">
+      <Assign.To>
+        <OutArgument x:TypeArguments="snm:MailMessage">[mail]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="snm:MailMessage">[new MailMessage()]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Sequence DisplayName="Assign Mail Variables" sap2010:WorkflowViewState.IdRef="Sequence_5">
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get body" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_19" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">body</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[mail.Body]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get subject" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_20" UnSafe="False" WorkflowFileName="Library\Utility\getEnvironmentVariable.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <InArgument x:TypeArguments="x:String" x:Key="key">subject</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="value">[mail.Subject]</OutArgument>
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+    </Sequence>
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="snm:Attachment">[attachment]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="snm:Attachment">[new Attachment(filenameReport,System.Net.Mime.MediaTypeNames.Application.Octet)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <InvokeMethod DisplayName="Invoke method" sap2010:WorkflowViewState.IdRef="InvokeMethod_5" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="snm:AttachmentCollection">[mail.Attachments]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="snm:Attachment">[attachment]</InArgument>
+    </InvokeMethod>
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
+      <Assign.To>
+        <OutArgument x:TypeArguments="snm:Attachment">[attachment]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="snm:Attachment">[new Attachment(filenameChangelog,System.Net.Mime.MediaTypeNames.Application.Octet)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <InvokeMethod DisplayName="Invoke method" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="snm:AttachmentCollection">[mail.Attachments]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="snm:Attachment">[attachment]</InArgument>
+    </InvokeMethod>
+    <If Condition="[mail.Attachments.Count &gt; 0]" sap2010:WorkflowViewState.IdRef="If_1">
+      <If.Then>
+        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <ui:SendMail Bcc="{x:Null}" Body="{x:Null}" Cc="{x:Null}" Name="{x:Null}" Subject="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Private: Send SMTP Mail Message" Email="[sender]" EnableSSL="True" From="[sender]" sap2010:WorkflowViewState.IdRef="SendMail_2" IsBodyHtml="False" MailMessage="[mail]" Password="[password]" Port="[Cint(port)]" SecureConnection="Auto" Server="[server]" To="[receiver]">
+            <ui:SendMail.Files>
+              <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4" />
+            </ui:SendMail.Files>
+          </ui:SendMail>
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Error" Message="[&quot;mail.Attachments.Count: &quot; + mail.Attachments.Count.ToString]" />
+      </If.Else>
+    </If>
+    <InvokeMethod DisplayName="Invoke method" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" MethodName="Dispose">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="snm:MailMessage">[mail]</InArgument>
+      </InvokeMethod.TargetObject>
+    </InvokeMethod>
+    <sads:DebugSymbol.Symbol>d1NDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xTZW5kIEVtYWlsXFNlbmQgZW1haWwueGFtbEI8A7QBDgIBAUA0QEECAQJIBW0QAgE9bgV1DgIBOXYFgwEQAgEuhAEFiwEOAgEqjAEFkQEUAgElkgEFmQEOAgEhmgEFnwEUAgEcoAEFrQEKAgEGrgEFsgEUAgEDSQdOHwIBV08HVB8CAVJVB1ofAgFNWwdgHwIBSGEHZh8CAUNnB2wfAgE+czdzSgIBPHA4cD4CATp3B3wfAgE0fQeCAR8CAS+JATaJAYcBAgEthgE3hgFDAgErjgFAjgFSAgEokAE0kAFAAgEmlwE2lwGKAQIBJJQBN5QBQwIBIpwBQJwBUgIBH54BNJ4BQAIBHaABE6ABNAIBB6IBCagBFAIBDKsBCasBxAECAQmwATewAT0CAQRMQUxRAgFaSz5LTAIBWUmyAUnfAQIBWFJBUlQCAVVRPlFPAgFUT7YBT+MBAgFTWEFYSQIBUFc+V0QCAU9VqgFV1wECAU5eQV5JAgFLXT5dRAIBSlupAVvWAQIBSWRBZEsCAUZjPmNGAgFFYawBYdkBAgFEakFqRwIBQWk+aUICAUBnqAFn1QECAT96QXpMAgE3eT55QgIBNneoAXfVAQIBNYABQYABTwIBMn8+f0UCATF9qwF92AECATCjAQunARkCAQ2rAXerAcEBAgEKowGJA6MBlQMCARqjAdIBowHcAQIBGKMBsQGjAbsBAgEWowHNAqMB2wICARSjAfsCowGFAwIBEqMBuwKjAccCAgEQowGpAqMBsQICAQ4=</sads:DebugSymbol.Symbol>
+  </Sequence>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_3" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_14" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_12" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_1" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_17" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_18" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="675,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_4" sap:VirtualizedContainerService.HintSize="675,60" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_19" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_20" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="675,338">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="675,60" />
+      <sap2010:ViewStateData Id="InvokeMethod_5" sap:VirtualizedContainerService.HintSize="675,132" />
+      <sap2010:ViewStateData Id="Assign_8" sap:VirtualizedContainerService.HintSize="675,60" />
+      <sap2010:ViewStateData Id="InvokeMethod_2" sap:VirtualizedContainerService.HintSize="675,132" />
+      <sap2010:ViewStateData Id="SendMail_2" sap:VirtualizedContainerService.HintSize="314,145">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,269">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91" />
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="675,417" />
+      <sap2010:ViewStateData Id="InvokeMethod_3" sap:VirtualizedContainerService.HintSize="675,132" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="697,1826">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="4. Send Mail_1" sap:VirtualizedContainerService.HintSize="737,2146" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>

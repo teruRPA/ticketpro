@@ -1,8 +1,7 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="AddingCompletedTickets" this:AddingCompletedTickets.ticketsArg="[new Datatable]" this:AddingCompletedTickets.DataTableBaseArg="[new Datatable]"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="AddingCompletedTickets" this:AddingCompletedTickets.Tickets="[new Datatable]" this:AddingCompletedTickets.ReportIn="[new Datatable]"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
- xmlns:s="clr-namespace:System;assembly=mscorlib"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
@@ -13,9 +12,9 @@
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="ticketsArg" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="DataTableBaseArg" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="OutTableArg" Type="OutArgument(sd:DataTable)" />
+    <x:Property Name="Tickets" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="ReportIn" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="ReportOut" Type="OutArgument(sd:DataTable)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -72,149 +71,89 @@
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="AddingCompletedTickets" sap2010:WorkflowViewState.IdRef="Sequence_1">
-    <Sequence.Variables>
-      <Variable x:TypeArguments="sd:DataTable" Default="[new Datatable]" Name="DataTableBase" />
-      <Variable x:TypeArguments="sd:DataTable" Default="[new Datatable]" Name="tickets" />
-      <Variable x:TypeArguments="x:String" Name="output" />
-      <Variable x:TypeArguments="x:Int32" Name="ExpirationInDays" />
-      <Variable x:TypeArguments="x:String" Name="ExpirationFromSetting" />
-    </Sequence.Variables>
-    <Sequence DisplayName="Assign Variables" sap2010:WorkflowViewState.IdRef="Sequence_7">
-      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Get Expiration from Settings.json" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Common\getEnvironmentVariable.xaml">
-        <ui:InvokeWorkflowFile.Arguments>
-          <InArgument x:TypeArguments="x:String" x:Key="key">ExpirationInDays</InArgument>
-          <OutArgument x:TypeArguments="x:String" x:Key="value">[ExpirationFromSetting]</OutArgument>
-        </ui:InvokeWorkflowFile.Arguments>
-      </ui:InvokeWorkflowFile>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_11">
-        <Assign.To>
-          <OutArgument x:TypeArguments="x:Int32">[ExpirationInDays]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="x:Int32">[cint(ExpirationFromSetting)]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_12">
-        <Assign.To>
-          <OutArgument x:TypeArguments="sd:DataTable">[tickets]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="sd:DataTable">[ticketsArg]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
-        <Assign.To>
-          <OutArgument x:TypeArguments="sd:DataTable">[DataTableBase]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="sd:DataTable">[DataTableBaseArg]</InArgument>
-        </Assign.Value>
-      </Assign>
-    </Sequence>
-    <Sequence DisplayName="Iterate Through Tickets" sap2010:WorkflowViewState.IdRef="Sequence_4">
-      <ui:ForEachRow DataTable="[tickets]" DisplayName="For each row" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
-        <ui:ForEachRow.Body>
-          <ActivityAction x:TypeArguments="sd:DataRow">
-            <ActivityAction.Argument>
-              <DelegateInArgument x:TypeArguments="sd:DataRow" Name="ticketRow" />
-            </ActivityAction.Argument>
-            <Sequence DisplayName="Inner For - finds expired tickets" sap2010:WorkflowViewState.IdRef="Sequence_3">
-              <Sequence.Variables>
-                <Variable x:TypeArguments="ui:GenericValue" Name="name" />
-                <Variable x:TypeArguments="x:Int32" Name="ticketAge" />
-                <Variable x:TypeArguments="s:DateTime" Name="CreatedDate" />
-                <Variable x:TypeArguments="s:DateTime" Name="TimeNow" />
-                <Variable x:TypeArguments="x:Int32" Name="HowOldTicket" />
-              </Sequence.Variables>
-              <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Owner" DisplayName="Get name" sap2010:WorkflowViewState.IdRef="GetRowItem_1" Row="[ticketRow]">
-                <ui:GetRowItem.Value>
-                  <OutArgument x:TypeArguments="ui:GenericValue">[name]</OutArgument>
-                </ui:GetRowItem.Value>
-              </ui:GetRowItem>
-              <ui:ForEachRow DataTable="[DataTableBase]" DisplayName="For each row" sap2010:WorkflowViewState.IdRef="ForEachRow_2">
-                <ui:ForEachRow.Body>
-                  <ActivityAction x:TypeArguments="sd:DataRow">
-                    <ActivityAction.Argument>
-                      <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                    </ActivityAction.Argument>
-                    <Sequence DisplayName="Inside DataTableBase" sap2010:WorkflowViewState.IdRef="Sequence_5">
-                      <Sequence.Variables>
-                        <Variable x:TypeArguments="ui:GenericValue" Name="innerName" />
-                        <Variable x:TypeArguments="x:Int32" Default="0" Name="AddingOne" />
-                      </Sequence.Variables>
-                      <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Employee" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_2" Row="[row]">
-                        <ui:GetRowItem.Value>
-                          <OutArgument x:TypeArguments="ui:GenericValue">[innerName]</OutArgument>
-                        </ui:GetRowItem.Value>
-                      </ui:GetRowItem>
-                      <If Condition="[innerName.Equals(name)]" DisplayName="If - innerName.Equals(name)" sap2010:WorkflowViewState.IdRef="If_1">
-                        <If.Then>
-                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6">
-                            <Sequence.Variables>
-                              <Variable x:TypeArguments="ui:GenericValue" Name="foundCompleted" />
-                            </Sequence.Variables>
-                            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Active" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_3" Row="[row]">
-                              <ui:GetRowItem.Value>
-                                <OutArgument x:TypeArguments="ui:GenericValue">[foundCompleted]</OutArgument>
-                              </ui:GetRowItem.Value>
-                            </ui:GetRowItem>
-                            <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Int32">[AddingOne]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Int32">[cint(foundCompleted)]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Object">[row("Completed")]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Object">[AddingOne+1]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                          </Sequence>
-                        </If.Then>
-                        <If.Else>
-                          <ui:Comment sap2010:WorkflowViewState.IdRef="Comment_1" Text="&quot;do nothing&quot;&#xA;" />
-                        </If.Else>
-                      </If>
-                    </Sequence>
-                  </ActivityAction>
-                </ui:ForEachRow.Body>
-              </ui:ForEachRow>
-            </Sequence>
-          </ActivityAction>
-        </ui:ForEachRow.Body>
-      </ui:ForEachRow>
-      <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
-        <Assign.To>
-          <OutArgument x:TypeArguments="sd:DataTable">[OutTableArg]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="sd:DataTable">[DataTableBase]</InArgument>
-        </Assign.Value>
-      </Assign>
-    </Sequence>
-    <sads:DebugSymbol.Symbol>d1tDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9cQnVzaW5lc3NcRGF0YVRhYmxlXEFkZGluZyBjb21wbGV0ZWQgdGlja2V0cy54YW1sNAGyAQHCAQEDAXMBgwEBAkoDyQEOAgEBTDhMSQIBA004TUkCAQJSBXEQAgExcgXHARACAQRTB1gfAgFBWQdgEAIBPGEHaBACATdpB3AQAgEycwe+ARcCAQq/AQfGARACAQVWQVZYAgFEVT5VTgIBQ1PAAVPkAQIBQl4xXk4CAT9bMltEAgE9ZjZmQgIBOmM3Y0ACAThuNm5IAgE1azdrRgIBM3MgcysCAS95DbsBGAIBC8QBNsQBRQIBCMEBN8EBRAIBBoEBD4UBHwIBKYYBD7oBHwIBDIMBQoMBSAIBLYEBpAGBAbEBAgErgQFSgQFZAgEqhgEohgE5AgEnjAEVtwEgAgENjwFFjwFIAgEOkQEXlQEnAgEhlgEXtgEcAgEPkwFKkwFVAgElkQGzAZEBugECASORAVqRAWQCASKWASWWAT8CARCYARuxASYCARK0ARu0AXgCARGcAR2gAS0CARuhAR2oASYCARepAR2wASYCAROeAVCeAWACAR+cAbcBnAG+AQIBHZwBYJwBaAIBHKYBR6YBXQIBGqMBSKMBUwIBGK4BSK4BVQIBFasBSasBWwIBFA==</sads:DebugSymbol.Symbol>
+    <ui:ForEachRow DataTable="[Tickets]" DisplayName="For each row" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="ticketRow" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Inner For - finds expired tickets" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="ui:GenericValue" Name="name" />
+            </Sequence.Variables>
+            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Owner" DisplayName="Get name" sap2010:WorkflowViewState.IdRef="GetRowItem_1" Row="[ticketRow]">
+              <ui:GetRowItem.Value>
+                <OutArgument x:TypeArguments="ui:GenericValue">[name]</OutArgument>
+              </ui:GetRowItem.Value>
+            </ui:GetRowItem>
+            <ui:ForEachRow DataTable="[ReportIn]" DisplayName="For each row in report" sap2010:WorkflowViewState.IdRef="ForEachRow_2">
+              <ui:ForEachRow.Body>
+                <ActivityAction x:TypeArguments="sd:DataRow">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Inside DataTableBase" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="ui:GenericValue" Name="innerName" />
+                      <Variable x:TypeArguments="x:Int32" Default="0" Name="AddingOne" />
+                    </Sequence.Variables>
+                    <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Employee" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_2" Row="[row]">
+                      <ui:GetRowItem.Value>
+                        <OutArgument x:TypeArguments="ui:GenericValue">[innerName]</OutArgument>
+                      </ui:GetRowItem.Value>
+                    </ui:GetRowItem>
+                    <If Condition="[innerName.Equals(name)]" DisplayName="If - innerName.Equals(name)" sap2010:WorkflowViewState.IdRef="If_1">
+                      <If.Then>
+                        <Sequence DisplayName="Found match" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                          <Sequence.Variables>
+                            <Variable x:TypeArguments="ui:GenericValue" Name="foundCompleted" />
+                          </Sequence.Variables>
+                          <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Active" DisplayName="Get row item" sap2010:WorkflowViewState.IdRef="GetRowItem_3" Row="[row]">
+                            <ui:GetRowItem.Value>
+                              <OutArgument x:TypeArguments="ui:GenericValue">[foundCompleted]</OutArgument>
+                            </ui:GetRowItem.Value>
+                          </ui:GetRowItem>
+                          <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Int32">[AddingOne]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Int32">[cint(foundCompleted)]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Object">[row("Completed")]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Object">[AddingOne+1]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                    </If>
+                  </Sequence>
+                </ActivityAction>
+              </ui:ForEachRow.Body>
+            </ui:ForEachRow>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+    </ui:ForEachRow>
+    <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
+      <Assign.To>
+        <OutArgument x:TypeArguments="sd:DataTable">[ReportOut]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="sd:DataTable">[ReportIn]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <sads:DebugSymbol.Symbol>d2pDOlxVc2Vyc1x3aW5kZXZcRG9jdW1lbnRzXFVpUGF0aFx0aWNrZXRwcm9fZ2l0XFByb2Nlc3Nlc1xDcmVhdGUgUmVwb3J0c1xSZXBvcnRcQWRkaW5nQ29tcGxldGVkVGlja2V0cy54YW1sIgGnAQG3AQEDAXABgAEBAkkDmAEOAgEBSgWOARUCAQePAQWWAQ4CAQJKHkopAgErUAuLARYCAQiUATSUAT4CAQWRATWRAUACAQNUDVgdAgElWQ2KAR0CAQlWQFZGAgEpVKIBVK8BAgEnVFBUVwIBJlkmWTICASNfE4cBHgIBCmJDYkYCAQtkFWglAgEdaRWGARoCAQxmSGZTAgEhZLEBZLgBAgEfZFhkYgIBHmkjaT0CAQ1rGYQBJAIBDm8bcysCARd0G3skAgETfBuDASQCAQ9xTnFeAgEbb7UBb7wBAgEZb15vZgIBGHlFeVsCARZ2RnZRAgEUgQFGgQFTAgERfkd+WQIBEA==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Assign_11" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_12" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_13" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="801,511">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="GetRowItem_1" sap:VirtualizedContainerService.HintSize="727,64" />
-      <sap2010:ViewStateData Id="GetRowItem_2" sap:VirtualizedContainerService.HintSize="675,64" />
+      <sap2010:ViewStateData Id="GetRowItem_1" sap:VirtualizedContainerService.HintSize="516,64" />
+      <sap2010:ViewStateData Id="GetRowItem_2" sap:VirtualizedContainerService.HintSize="464,64" />
       <sap2010:ViewStateData Id="GetRowItem_3" sap:VirtualizedContainerService.HintSize="314,64" />
       <sap2010:ViewStateData Id="Assign_14" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="314,60" />
@@ -225,40 +164,53 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Comment_1" sap:VirtualizedContainerService.HintSize="314,55" />
-      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="675,536" />
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="697,764">
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,536">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="486,764">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEachRow_2" sap:VirtualizedContainerService.HintSize="727,912" />
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="749,1140">
+      <sap2010:ViewStateData Id="ForEachRow_2" sap:VirtualizedContainerService.HintSize="516,912">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="538,1140">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="779,1288" />
-      <sap2010:ViewStateData Id="Assign_8" sap:VirtualizedContainerService.HintSize="779,60" />
-      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="801,1512">
+      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="568,1288">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_8" sap:VirtualizedContainerService.HintSize="568,60" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="590,1512">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="823,2187">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="AddingCompletedTickets_1" sap:VirtualizedContainerService.HintSize="863,2467" />
+      <sap2010:ViewStateData Id="AddingCompletedTickets_1" sap:VirtualizedContainerService.HintSize="630,1632" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
